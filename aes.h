@@ -40,4 +40,11 @@ void SubBytes(unsigned char state[AES_BLOCK_SIZE]);
 void ShiftRows(unsigned char state[AES_BLOCK_SIZE]);
 void MixColumns(unsigned char state[AES_BLOCK_SIZE]);
 
+// Additional AES Functions
+void KeyExpansion(unsigned char *key, AESKey *roundKeys, int keySize);
+void ExpandRoundKey(unsigned char *key, unsigned char *roundKey, int round);
+void InvShiftRows(unsigned char state[AES_BLOCK_SIZE]);
+void InvSubBytes(unsigned char state[AES_BLOCK_SIZE]);
+void InvMixColumns(unsigned char state[AES_BLOCK_SIZE]);
+
 #endif
