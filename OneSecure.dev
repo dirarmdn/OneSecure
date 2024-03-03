@@ -1,7 +1,7 @@
 [Project]
 FileName=OneSecure.dev
 Name=OneSecure
-Type=0
+Type=1
 Ver=2
 ObjFiles=
 Includes=
@@ -12,7 +12,7 @@ MakeIncludes=
 Compiler=
 CppCompiler=
 Linker=
-IsCpp=0
+IsCpp=1
 Icon=
 ExeOutput=
 ObjectOutput=
@@ -52,7 +52,7 @@ SyncProduct=1
 
 [Unit1]
 FileName=aes.c
-CompileCpp=0
+CompileCpp=1
 Folder=
 Compile=1
 Link=1
@@ -62,7 +62,7 @@ BuildCmd=
 
 [Unit2]
 FileName=aes.h
-CompileCpp=0
+CompileCpp=1
 Folder=
 Compile=1
 Link=1
@@ -72,7 +72,7 @@ BuildCmd=
 
 [Unit3]
 FileName=main.c
-CompileCpp=0
+CompileCpp=1
 Folder=
 Compile=1
 Link=1

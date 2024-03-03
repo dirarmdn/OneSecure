@@ -1,50 +1,32 @@
 #ifndef AES_H
 #define AES_H
 
-// Define AES Key Sizes
-#define AES_128_KEY_SIZE 16
-#define AES_192_KEY_SIZE 24
-#define AES_256_KEY_SIZE 32
+#include <stdint.h>
 
-// Define AES Block Size
-#define AES_BLOCK_SIZE 16
+typedef struct aes_state_s {
+  uint8_t state[4][4];
+} AES_State;
 
-// Define Operation Mode
-typedef enum {
-    ECB,
-    CBC,
-    CTR,
-} AES_MODE;
+typedef struct aes_key_s {
+  uint8_t key[32];
+} AES_Key;
 
-// Define AES Key Structures
-typedef struct {
-    int size;               // size of the key in bytes
-    unsigned char *data;    // pointer to the key data
-} AESKey;
+void aes_init(AES_State *state);
+void aes_add_round_key(AES_State *state, const AES_Key *key);
+void aes_sub_bytes(AES_State *state);
+void aes_shift_rows(AES_State *state);
+void aes_mix_columns(AES_State *state);
+void aes_encrypt(AES_State *state, const AES_Key *key);
+void aes_decrypt(AES_State *state, const AES_Key *key);
 
-// Define AES Context Structure
-typedef struct {
-    AESKey key;                         // encrypt/decrypt key
-    unsigned char iv[AES_BLOCK_SIZE];   // initialization vector
-    AES_MODE mode;                      // operation mode
-} AESContext;
+// Add declarations for inverse functions here
+void aes_inv_shift_rows(AES_State *state);
+void aes_inv_sub_bytes(AES_State *state);
+void aes_inv_mix_columns(AES_State *state);
 
-// Function Prototypes
-void aes_init(AESContext *ctx, unsigned char *key, int key_size, unsigned char *iv, AES_MODE mode);
-void aes_encrypt(AESContext *ctx, unsigned char *input, unsigned char *output, int length);
-void aes_decrypt(AESContext *ctx, unsigned char *input, unsigned char *output, int length);
+// Declare aes_inv_sub_bytes with an argument for the inverse S-box
+void aes_inv_sub_bytes(AES_State *state, const uint8_t* inv_sbox);
 
-// AES Core Functions
-void AddRoundKey(unsigned char state[AES_BLOCK_SIZE], unsigned char *roundKey);
-void SubBytes(unsigned char state[AES_BLOCK_SIZE]);
-void ShiftRows(unsigned char state[AES_BLOCK_SIZE]);
-void MixColumns(unsigned char state[AES_BLOCK_SIZE]);
 
-// Additional AES Functions
-void KeyExpansion(unsigned char *key, AESKey *roundKeys, int keySize);
-void ExpandRoundKey(unsigned char *key, unsigned char *roundKey, int round);
-void InvShiftRows(unsigned char state[AES_BLOCK_SIZE]);
-void InvSubBytes(unsigned char state[AES_BLOCK_SIZE]);
-void InvMixColumns(unsigned char state[AES_BLOCK_SIZE]);
+#endif /* AES_H */
 
-#endif
