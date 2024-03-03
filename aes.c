@@ -77,6 +77,23 @@ void aes_shift_rows(AES_State *state) {
   state->state[1][3] = temp;
 }
 
+uint8_t aes_mul(uint8_t a, uint8_t b) {
+    uint8_t result = 0;
+    uint8_t high_bit_set;
+    for (int i = 0; i < 8; i++) {
+        if ((b & 1) == 1) {
+            result ^= a;
+        }
+        high_bit_set = a & 0x80;
+        a <<= 1;
+        if (high_bit_set == 0x80) {
+            a ^= 0x1b; // XOR with 0x1b if high bit was set before shifting
+        }
+        b >>= 1;
+    }
+    return result;
+}
+
 
 void aes_mix_columns(AES_State *state) {
   uint8_t temp, a, b;
@@ -143,24 +160,21 @@ void aes_inv_sub_bytes(AES_State *state) {
 }
 
 void aes_inv_mix_columns(AES_State *state) {
-  // Implementasi inverse mix columns operation
+    uint8_t a, b, c, d;
 
-  uint8_t a, b;
+    for (int col = 0; col < 4; col++) {
+        a = state->state[0][col];
+        b = state->state[1][col];
+        c = state->state[2][col];
+        d = state->state[3][col];
 
-  for (int col = 0; col < 4; col++) {
-    a = state->state[0][col];
-    b = state->state[2][col];
-    // Invert the mix columns operation (refer to AES specification)
-    state->state[0][col] = a ^ (a << 1) ^ b ^ (b << 3);
-    state->state[2][col] = a ^ a ^ (b << 1) ^ (b << 2);
-
-    a = state->state[1][col];
-    b = state->state[3][col];
-    // Invert the mix columns operation
-    state->state[1][col] = a ^ (a << 1) ^ b ^ (b << 3);
-    state->state[3][col] = a ^ a ^ (b << 1) ^ (b << 2);
-  }
+        state->state[0][col] = aes_mul(0x0e, a) ^ aes_mul(0x0b, b) ^ aes_mul(0x0d, c) ^ aes_mul(0x09, d);
+        state->state[1][col] = aes_mul(0x09, a) ^ aes_mul(0x0e, b) ^ aes_mul(0x0b, c) ^ aes_mul(0x0d, d);
+        state->state[2][col] = aes_mul(0x0d, a) ^ aes_mul(0x09, b) ^ aes_mul(0x0e, c) ^ aes_mul(0x0b, d);
+        state->state[3][col] = aes_mul(0x0b, a) ^ aes_mul(0x0d, b) ^ aes_mul(0x09, c) ^ aes_mul(0x0e, d);
+    }
 }
+
 
 void aes_inv_sub_bytes(AES_State *state, const uint8_t* inv_sbox) {
   // Invert the substitution operation of aes_sub_bytes
