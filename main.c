@@ -1,57 +1,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h> // Untuk srand()
 #include "aes.h"
 
-#define MAX_INPUT_LENGTH 256
+#define BLOCK_SIZE 16
+
+void print_hex(const uint8_t *data, size_t size) {
+  for (size_t i = 0; i < size; i++) {
+    printf("%02x", data[i]);
+  }
+  printf("\n");
+}
 
 int main() {
-    int i;
+  AES_State state;
+  AES_Key key;
 
-    // Initialize AES context
-    AESContext ctx;
-    unsigned char key[AES_128_KEY_SIZE] = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x97, 0x98, 0x09, 0x6a, 0x6b, 0xe7};
-    unsigned char iv[AES_BLOCK_SIZE];
-    memset(iv, 0, AES_BLOCK_SIZE); // Inisialisasi IV dengan nol
+  printf("Enter plaintext (up to 16 characters): ");
 
-    // Inisialisasi IV dengan nilai acak (opsional)
-    srand(time(NULL));
-    for (i = 0; i < AES_BLOCK_SIZE; ++i) {
-        iv[i] = rand() % 256; // IV diisi dengan nilai acak dari 0 hingga 255
-    }
+  char plaintext[BLOCK_SIZE + 1]; // +1 for null terminator
+  int c;
+  int i = 0;
 
-    aes_init(&ctx, key, AES_128_KEY_SIZE, iv, CBC); // Gunakan mode CBC
+  // Read characters one by one, stopping at newline or reaching max characters
+  while ((c = fgetc(stdin)) != EOF && c != '\n' && i < BLOCK_SIZE - 1) {
+    plaintext[i++] = (char) c;
+  }
 
-    // Data yang akan dienkripsi
-    printf("Masukkan pesan yang akan dienkripsi: ");
-    char input[MAX_INPUT_LENGTH];
-    fgets(input, sizeof(input), stdin);
-    input[strcspn(input, "\n")] = '\0'; // Hapus karakter newline
+  // Handle potential buffer overflow
+  if (i == BLOCK_SIZE - 1 && c != EOF && c != '\n') {
+    printf("Warning: Plaintext exceeds allowed characters. Truncating.\n");
+  }
 
-    // Enkripsi data
-    unsigned char encrypted[MAX_INPUT_LENGTH]; // Gunakan buffer yang cukup besar
-    aes_encrypt(&ctx, (unsigned char*)input, encrypted, strlen(input));
+  // Ensure null termination
+  plaintext[i] = '\0';
 
-    // Print data yang terenkripsi
-    printf("Terenkripsi: ");
-    for (i = 0; i < strlen(input); i++) {
-        printf("%02x ", encrypted[i]);
-    }
-    printf("\n");
-    fflush(stdout); // Flush output buffer
+  // Pad the input if it's less than 16 characters
+  if (i < BLOCK_SIZE) {
+    memset(plaintext + i, ' ', BLOCK_SIZE - i);
+  }
 
-    // Dekripsi data
-    unsigned char decrypted[MAX_INPUT_LENGTH]; // Gunakan buffer yang cukup besar
-    aes_decrypt(&ctx, encrypted, decrypted, strlen(input));
+  printf("Plaintext (without padding): %s\n", plaintext);
 
-    // Print data yang terdekripsi
-    printf("Terdekripsi: ");
-    for (i = 0; i < strlen(input); i++) {
-        printf("%c", decrypted[i]);
-    }
-    printf("\n");
-    fflush(stdout); // Flush output buffer
+  // Encryption
+  aes_init(&state);
+  aes_encrypt(&state, &key);
+  printf("Encrypted text: ");
+  print_hex(state.state[0], sizeof(state.state));
 
-    return 0;
+  // Decryption
+  AES_State encrypted_state = state; // Make a copy of the encrypted state
+  aes_decrypt(&encrypted_state, &key);
+
+  // Remove padding (not necessary in this case, but good practice)
+  encrypted_state.state[0][i] = '\0';
+
+  printf("Decrypted text: %s\n", encrypted_state.state[0]);
+
+  return 0;
 }
+
