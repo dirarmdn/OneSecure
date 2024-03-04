@@ -20,11 +20,11 @@ To get started with OneSecure, follow these steps:
   
 ## Acknowledgments
 Our Team Member(s) 🤖:
-1. Alya Gustiani N. A (231511035)
-2. Dhira Ramadini (231511041)
-3. Dwika Ali Ramdhan I (231511042)
-4. Muammar Syahid R (231511052)
-5. M Raihan Pratama (231511055)
+1. Alya Gustiani N. A (231511035) [https://github.com/alyagustiani]
+2. Dhira Ramadini (231511041) [https://github.com/dirarmdn]
+3. Dwika Ali Ramdhan I (231511042) [https://github.com/DAliRIJTK]
+4. Muammar Syahid R (231511052) [https://github.com/syahiddrr]
+5. M Raihan Pratama (231511055) [https://github.com/marukoderu]
 
-Our Mentor 😎:
-Yadhi Aditya
+Our Manager 😎:
+Yadhi Aditya Permana, ST, M.Kom
