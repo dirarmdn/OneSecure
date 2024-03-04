@@ -1,50 +1,49 @@
 #ifndef AES_H
 #define AES_H
 
-// Define AES Key Sizes
-#define AES_128_KEY_SIZE 16
-#define AES_192_KEY_SIZE 24
-#define AES_256_KEY_SIZE 32
+#include <stdint.h>
 
-// Define AES Block Size
-#define AES_BLOCK_SIZE 16
-
-// Define Operation Mode
-typedef enum {
-    ECB,
-    CBC,
-    CTR,
-} AES_MODE;
-
-// Define AES Key Structures
+// AES State (4x4 matrix)
 typedef struct {
-    int size;               // size of the key in bytes
-    unsigned char *data;    // pointer to the key data
-} AESKey;
+    uint8_t state[4][4];
+} AES_State;
 
-// Define AES Context Structure
+// AES Key (128-bit key)
 typedef struct {
-    AESKey key;                         // encrypt/decrypt key
-    unsigned char iv[AES_BLOCK_SIZE];   // initialization vector
-    AES_MODE mode;                      // operation mode
-} AESContext;
+    uint8_t key[16];
+} AES_Key;
 
-// Function Prototypes
-void aes_init(AESContext *ctx, unsigned char *key, int key_size, unsigned char *iv, AES_MODE mode);
-void aes_encrypt(AESContext *ctx, unsigned char *input, unsigned char *output, int length);
-void aes_decrypt(AESContext *ctx, unsigned char *input, unsigned char *output, int length);
+// Function to initialize AES state to all zeros
+void aes_init(AES_State *state);
 
-// AES Core Functions
-void AddRoundKey(unsigned char state[AES_BLOCK_SIZE], unsigned char *roundKey);
-void SubBytes(unsigned char state[AES_BLOCK_SIZE]);
-void ShiftRows(unsigned char state[AES_BLOCK_SIZE]);
-void MixColumns(unsigned char state[AES_BLOCK_SIZE]);
+// Function to add round key to AES state
+void aes_add_round_key(AES_State *state, const AES_Key *key);
 
-// Additional AES Functions
-void KeyExpansion(unsigned char *key, AESKey *roundKeys, int keySize);
-void ExpandRoundKey(unsigned char *key, unsigned char *roundKey, int round);
-void InvShiftRows(unsigned char state[AES_BLOCK_SIZE]);
-void InvSubBytes(unsigned char state[AES_BLOCK_SIZE]);
-void InvMixColumns(unsigned char state[AES_BLOCK_SIZE]);
+// Function to perform AES substitution bytes operation
+void aes_sub_bytes(AES_State *state);
 
-#endif
+// Function to perform AES inverse substitution bytes operation
+void aes_inv_sub_bytes(AES_State *state, const uint8_t* inv_sbox);
+
+// Function to perform AES shift rows operation
+void aes_shift_rows(AES_State *state);
+
+// Function to perform AES inverse shift rows operation
+void aes_inv_shift_rows(AES_State *state);
+
+// Function to perform AES mix columns operation
+void aes_mix_columns(AES_State *state);
+
+// Function to perform AES inverse mix columns operation
+void aes_inv_mix_columns(AES_State *state);
+
+// Function to perform AES encryption
+void aes_encrypt(AES_State *state, const AES_Key *key);
+
+// Function to perform AES decryption
+void aes_decrypt(AES_State *state, const AES_Key *key);
+
+// Function to multiply two numbers in GF(2^8) (used in MixColumns and InvMixColumns)
+uint8_t aes_mul(uint8_t a, uint8_t b);
+
+#endif /* AES_H */
