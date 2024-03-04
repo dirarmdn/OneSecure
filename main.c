@@ -1,92 +1,62 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "aes.h" // Assuming your AES implementation (header file)
+#include "aes.h"
 
-// Function to pad the plaintext using PKCS#7 padding
-int pad_plaintext_length(int plaintext_length) {
-    return ((plaintext_length + 15) / 16) * 16; // Calculate the padded length
-}
+#define BLOCK_SIZE 16
 
-void pad_plaintext(uint8_t *plaintext, int plaintext_length) {
-    int padding_size = pad_plaintext_length(plaintext_length) - plaintext_length;
-    for (int i = 0; i < padding_size; i++) {
-        plaintext[plaintext_length + i] = padding_size; // Add padding bytes with value equal to padding size
-    }
-}
-
-// Function to unpad the ciphertext after decryption (assuming PKCS#7 padding)
-int unpad_plaintext_length(uint8_t *state) {
-    int padding_size = state[15]; // Get the padding size from the last byte
-    return 16 - padding_size; // Return the unpadded plaintext length
+void print_hex(const uint8_t *data, size_t size) {
+  for (size_t i = 0; i < size; i++) {
+    printf("%02x", data[i]);
+  }
+  printf("\n");
 }
 
 int main() {
-    // Plaintext yang akan dienkripsi (manually entered)
-    char plaintext[1024]; // Example, adjust size as needed
+  AES_State state;
+  AES_Key key;
 
-    // Key untuk enkripsi (sesuaikan panjang key dengan implementasi AES)
-    uint8_t key[16] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef};
+  printf("Enter plaintext (up to 16 characters): ");
 
-    // Inisialisasi state
-    AES_State state;
-    aes_init(&state);
+  char plaintext[BLOCK_SIZE + 1]; // +1 for null terminator
+  int c;
+  int i = 0;
 
-    // Plaintext input
-    printf("Enter plaintext: ");
-    if (fgets(plaintext, sizeof(plaintext), stdin) == NULL) {
-        fprintf(stderr, "Failed to read plaintext input\n");
-        return 1;
-    }
-    plaintext[strcspn(plaintext, "\n")] = '\0'; // Remove newline
+  // Read characters one by one, stopping at newline or reaching max characters
+  while ((c = fgetc(stdin)) != EOF && c != '\n' && i < BLOCK_SIZE - 1) {
+    plaintext[i++] = (char) c;
+  }
 
-    // Pad the plaintext before encryption (assuming PKCS#7)
-    int plaintext_length = strlen(plaintext);
-    int padded_plaintext_length = pad_plaintext_length(plaintext_length);
-    uint8_t padded_plaintext[padded_plaintext_length];
-    memcpy(padded_plaintext, plaintext, plaintext_length);
-    pad_plaintext(padded_plaintext, plaintext_length);
+  // Handle potential buffer overflow
+  if (i == BLOCK_SIZE - 1 && c != EOF && c != '\n') {
+    printf("Warning: Plaintext exceeds allowed characters. Truncating.\n");
+  }
 
-    // Copy padded plaintext into state
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            state.state[i][j] = padded_plaintext[i * 4 + j];
-        }
-    }
+  // Ensure null termination
+  plaintext[i] = '\0';
 
-    // Enkripsi data
-    aes_encrypt(&state, (AES_Key*)key);
+  // Pad the input if it's less than 16 characters
+  if (i < BLOCK_SIZE) {
+    memset(plaintext + i, ' ', BLOCK_SIZE - i);
+  }
 
-    // Tampilkan ciphertext (dalam format hex)
-    printf("Ciphertext: ");
-    for (int i = 0; i < 16; i++) {
-        printf("%02x", state.state[i / 4][i % 4]);
-    }
-    printf("\n");
+  printf("Plaintext (without padding): %s\n", plaintext);
 
-    // Dekripsi data
-		aes_decrypt(&state, (AES_Key*)key);
+  // Encryption
+  aes_init(&state);
+  aes_encrypt(&state, &key);
+  printf("Encrypted text: ");
+  print_hex(state.state[0], sizeof(state.state));
 
-		// Print the decrypted state for debugging
-		printf("Decrypted state: ");
-		for (int i = 0; i < 16; i++) {
-		    printf("%c", state.state[i / 4][i % 4]);
-		}
-		printf("\n");
+  // Decryption
+  AES_State encrypted_state = state; // Make a copy of the encrypted state
+  aes_decrypt(&encrypted_state, &key);
 
-		// Unpad the decrypted state (assuming PKCS#7)
-		int unpadded_plaintext_length = unpad_plaintext_length((uint8_t*)state.state);
-		if (unpadded_plaintext_length == -1) {
-		    fprintf(stderr, "Error: Invalid padding detected\n");
-		    return 1;
-		}
+  // Remove padding (not necessary in this case, but good practice)
+  encrypted_state.state[0][i] = '\0';
 
-    // Tampilkan plaintext yang didekripsi
-    printf("Plaintext (after decryption): ");
-    for (int i = 0; i < unpadded_plaintext_length; i++) {
-        printf("%c", state.state[i / 4][i % 4]);
-    }
-    printf("\n");
+  printf("Decrypted text: %s\n", encrypted_state.state[0]);
 
-    return 0;
+  return 0;
 }
 
