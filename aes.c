@@ -1,4 +1,5 @@
 #include "aes.h"
+#include "raihan.h"
 
 #include <stdint.h>
 #define NR 10  // Number of rounds for 128-bit key (adjust for other key lengths)

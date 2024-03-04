@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "aes.h"
+#include "raihan.h"
 
 #define BLOCK_SIZE 16
 

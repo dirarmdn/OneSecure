@@ -18,17 +18,11 @@ typedef struct {
 // Function to initialize AES state to all zeros
 void aes_init(AES_State *state);
 
-// Function to add round key to AES state
-void aes_add_round_key(AES_State *state, const AES_Key *key);
-
 // Function to perform AES substitution bytes operation
 void aes_sub_bytes(AES_State *state);
 
 // Function to perform AES shift rows operation
 void aes_shift_rows(AES_State *state);
-
-// Function to perform AES mix columns operation
-void aes_mix_columns(AES_State *state);
 
 // Function to perform AES encryption
 void aes_encrypt(AES_State *state, const AES_Key *key);
