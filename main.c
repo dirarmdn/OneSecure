@@ -1,63 +1,86 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "aes.h"
+/* Basic implementation of AES in C
+ *
+ * Warning: THIS CODE IS ONLY FOR LEARNING PURPOSES
+ *          NOT RECOMMENDED TO USE IT IN ANY PRODUCTS
+ */
+
+#include <stdio.h>  // for printf
+#include <stdlib.h> // for malloc, free
 #include "raihan.h"
 
-#define BLOCK_SIZE 16
+int main(int argc, char *argv[])
+{
+    // the expanded keySize
+    int expandedKeySize = 176;
 
-void print_hex(const uint8_t *data, size_t size) {
-  for (size_t i = 0; i < size; i++) {
-    printf("%02x", data[i]);
-  }
-  printf("\n");
+    // the expanded key
+    unsigned char expandedKey[expandedKeySize];
+
+    // the cipher key
+    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
+
+    // the cipher key size
+    enum keySize size = SIZE_16;
+
+    // the plaintext
+    unsigned char plaintext[16] = {'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+
+    // the ciphertext
+    unsigned char ciphertext[16];
+
+    // the decrypted text
+    unsigned char decryptedtext[16];
+
+    int i;
+
+    printf("**************************************************\n");
+    printf("*   Basic implementation of AES algorithm in C   *\n");
+    printf("**************************************************\n");
+
+    printf("\nCipher Key (HEX format):\n");
+
+    for (i = 0; i < 16; i++)
+    {
+        // Print characters in HEX format, 16 chars per line
+        printf("%2.2x%c", key[i], ((i + 1) % 16) ? ' ' : '\n');
+    }
+
+    // Test the Key Expansion
+    expandKey(expandedKey, key, size, expandedKeySize);
+
+    printf("\nExpanded Key (HEX format):\n");
+
+    for (i = 0; i < expandedKeySize; i++)
+    {
+        printf("%2.2x%c", expandedKey[i], ((i + 1) % 16) ? ' ' : '\n');
+    }
+
+    printf("\nPlaintext (HEX format):\n");
+
+    for (i = 0; i < 16; i++)
+    {
+        printf("%2.2x%c", plaintext[i], ((i + 1) % 16) ? ' ' : '\n');
+    }
+
+    // AES Encryption
+    aes_encrypt(plaintext, ciphertext, key, SIZE_16);
+
+    printf("\nCiphertext (HEX format):\n");
+
+    for (i = 0; i < 16; i++)
+    {
+        printf("%2.2x%c", ciphertext[i], ((i + 1) % 16) ? ' ' : '\n');
+    }
+
+    // AES Decryption
+    aes_decrypt(ciphertext, decryptedtext, key, SIZE_16);
+
+    printf("\nDecrypted text (HEX format):\n");
+
+    for (i = 0; i < 16; i++)
+    {
+        printf("%2.2x%c", decryptedtext[i], ((i + 1) % 16) ? ' ' : '\n');
+    }
+
+    return 0;
 }
-
-int main() {
-  AES_State state;
-  AES_Key key;
-
-  printf("Enter plaintext (up to 16 characters): ");
-
-  char plaintext[BLOCK_SIZE + 1]; // +1 for null terminator
-  int c;
-  int i = 0;
-
-  // Read characters one by one, stopping at newline or reaching max characters
-  while ((c = fgetc(stdin)) != EOF && c != '\n' && i < BLOCK_SIZE - 1) {
-    plaintext[i++] = (char) c;
-  }
-
-  // Handle potential buffer overflow
-  if (i == BLOCK_SIZE - 1 && c != EOF && c != '\n') {
-    printf("Warning: Plaintext exceeds allowed characters. Truncating.\n");
-  }
-
-  // Ensure null termination
-  plaintext[i] = '\0';
-
-  // Pad the input if it's less than 16 characters
-  if (i < BLOCK_SIZE) {
-    memset(plaintext + i, ' ', BLOCK_SIZE - i);
-  }
-
-  printf("Plaintext (without padding): %s\n", plaintext);
-
-  // Encryption
-  aes_init(&state);
-  aes_encrypt(&state, &key);
-  printf("Encrypted text: ");
-  print_hex(state.state[0], sizeof(state.state));
-
-  // Decryption
-  AES_State encrypted_state = state; // Make a copy of the encrypted state
-  aes_decrypt(&encrypted_state, &key);
-
-  // Remove padding (not necessary in this case, but good practice)
-  encrypted_state.state[0][i] = '\0';
-
-  printf("Decrypted text: %s\n", encrypted_state.state[0]);
-
-  return 0;
-}
-
