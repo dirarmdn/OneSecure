@@ -328,86 +328,54 @@ void aes_main(unsigned char *state, unsigned char *expandedKey, int nbrRounds)
     addRoundKey(state, roundKey);
 }
 
-char aes_encrypt(unsigned char *input,
-                 unsigned char *output,
-                 unsigned char *key,
-                 enum keySize size)
-{
-    // the expanded keySize
+char aes_encrypt(unsigned char *input, unsigned char *output, unsigned char *key, enum keySize size) {
     int expandedKeySize;
-
-    // the number of rounds
     int nbrRounds;
-
-    // the expanded key
+    int i;
     unsigned char *expandedKey;
-
-    // the 128 bit block to encode
     unsigned char block[16];
 
-    int i, j;
-
-    // set the number of rounds
-    switch (size)
-    {
-    case SIZE_16:
-        nbrRounds = 10;
-        break;
-    case SIZE_24:
-        nbrRounds = 12;
-        break;
-    case SIZE_32:
-        nbrRounds = 14;
-        break;
-    default:
-        return ERROR_AES_UNKNOWN_KEYSIZE;
-        break;
+    switch (size) {
+        case SIZE_16:
+            nbrRounds = 10;
+            expandedKeySize = 176;
+            break;
+        case SIZE_24:
+            nbrRounds = 12;
+            expandedKeySize = 208;
+            break;
+        case SIZE_32:
+            nbrRounds = 14;
+            expandedKeySize = 240;
+            break;
+        default:
+            return ERROR_AES_UNKNOWN_KEYSIZE;
     }
-
-    expandedKeySize = (16 * (nbrRounds + 1));
 
     expandedKey = (unsigned char *)malloc(expandedKeySize * sizeof(unsigned char));
-
-    if (expandedKey == NULL)
-    {
+    if (expandedKey == NULL) {
         return ERROR_MEMORY_ALLOCATION_FAILED;
     }
-    else
-    {
-        /* Set the block values, for the block:
-         * a0,0 a0,1 a0,2 a0,3
-         * a1,0 a1,1 a1,2 a1,3
-         * a2,0 a2,1 a2,2 a2,3
-         * a3,0 a3,1 a3,2 a3,3
-         * the mapping order is a0,0 a1,0 a2,0 a3,0 a0,1 a1,1 ... a2,3 a3,3
-         */
 
-        // iterate over the columns
-        for (i = 0; i < 4; i++)
-        {
-            // iterate over the rows
-            for (j = 0; j < 4; j++)
-                block[(i + (j * 4))] = input[(i * 4) + j];
-        }
-
-        // expand the key into an 176, 208, 240 bytes key
-        expandKey(expandedKey, key, size, expandedKeySize);
-
-        // encrypt the block using the expandedKey
-        aes_main(block, expandedKey, nbrRounds);
-
-        // unmap the block again into the output
-        for (i = 0; i < 4; i++)
-        {
-            // iterate over the rows
-            for (j = 0; j < 4; j++)
-                output[(i * 4) + j] = block[(i + (j * 4))];
-        }
-
-        // de-allocate memory for expandedKey
-        free(expandedKey);
-        expandedKey = NULL;
+    // Set the block values
+    for (i = 0; i < 16; i++) {
+        block[i] = input[i];
     }
+
+    // Expand the key
+    expandKey(expandedKey, key, size, expandedKeySize);
+
+    // Encrypt the block using the expandedKey
+    aes_main(block, expandedKey, nbrRounds);
+
+    // Map the block into the output
+    for (i = 0; i < 16; i++) {
+        output[i] = block[i];
+    }
+
+    // De-allocate memory for expandedKey
+    free(expandedKey);
+    expandedKey = NULL;
 
     return SUCCESS;
 }
@@ -525,86 +493,53 @@ void aes_invMain(unsigned char *state, unsigned char *expandedKey, int nbrRounds
     addRoundKey(state, roundKey);
 }
 
-char aes_decrypt(unsigned char *input,
-                 unsigned char *output,
-                 unsigned char *key,
-                 enum keySize size)
-{
-    // the expanded keySize
+char aes_decrypt(unsigned char *input, unsigned char *output, unsigned char *key, enum keySize size) {
     int expandedKeySize;
-
-    // the number of rounds
     int nbrRounds;
-
-    // the expanded key
     unsigned char *expandedKey;
-
-    // the 128 bit block to decode
     unsigned char block[16];
 
-    int i, j;
-
-    // set the number of rounds
-    switch (size)
-    {
-    case SIZE_16:
-        nbrRounds = 10;
-        break;
-    case SIZE_24:
-        nbrRounds = 12;
-        break;
-    case SIZE_32:
-        nbrRounds = 14;
-        break;
-    default:
-        return ERROR_AES_UNKNOWN_KEYSIZE;
-        break;
+    switch (size) {
+        case SIZE_16:
+            nbrRounds = 10;
+            expandedKeySize = 176;
+            break;
+        case SIZE_24:
+            nbrRounds = 12;
+            expandedKeySize = 208;
+            break;
+        case SIZE_32:
+            nbrRounds = 14;
+            expandedKeySize = 240;
+            break;
+        default:
+            return ERROR_AES_UNKNOWN_KEYSIZE;
     }
-
-    expandedKeySize = (16 * (nbrRounds + 1));
 
     expandedKey = (unsigned char *)malloc(expandedKeySize * sizeof(unsigned char));
-
-    if (expandedKey == NULL)
-    {
+    if (expandedKey == NULL) {
         return ERROR_MEMORY_ALLOCATION_FAILED;
     }
-    else
-    {
-        /* Set the block values, for the block:
-         * a0,0 a0,1 a0,2 a0,3
-         * a1,0 a1,1 a1,2 a1,3
-         * a2,0 a2,1 a2,2 a2,3
-         * a3,0 a3,1 a3,2 a3,3
-         * the mapping order is a0,0 a1,0 a2,0 a3,0 a0,1 a1,1 ... a2,3 a3,3
-         */
 
-        // iterate over the columns
-        for (i = 0; i < 4; i++)
-        {
-            // iterate over the rows
-            for (j = 0; j < 4; j++)
-                block[(i + (j * 4))] = input[(i * 4) + j];
-        }
-
-        // expand the key into an 176, 208, 240 bytes key
-        expandKey(expandedKey, key, size, expandedKeySize);
-
-        // decrypt the block using the expandedKey
-        aes_invMain(block, expandedKey, nbrRounds);
-
-        // unmap the block again into the output
-        for (i = 0; i < 4; i++)
-        {
-            // iterate over the rows
-            for (j = 0; j < 4; j++)
-                output[(i * 4) + j] = block[(i + (j * 4))];
-        }
-
-        // de-allocate memory for expandedKey
-        free(expandedKey);
-        expandedKey = NULL;
+    // Set the block values
+    for (int i = 0; i < 16; i++) {
+        block[i] = input[i];
     }
+
+    // Expand the key
+    expandKey(expandedKey, key, size, expandedKeySize);
+
+    // Decrypt the block using the expandedKey
+    aes_invMain(block, expandedKey, nbrRounds);
+
+    // Map the block into the output
+    for (int i = 0; i < 16; i++) {
+        output[i] = block[i];
+    }
+
+    // De-allocate memory for expandedKey
+    free(expandedKey);
+    expandedKey = NULL;
 
     return SUCCESS;
 }
