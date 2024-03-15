@@ -7,6 +7,7 @@
 #include <stdio.h>  // for printf
 #include <stdlib.h> // for malloc, free
 #include "raihan.h"
+#include "dhira.h"
 
 int main(int argc, char *argv[])
 {

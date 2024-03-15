@@ -19,12 +19,19 @@ void savePNG(const char* filename, unsigned char* data, int width, int height) {
 }
 
 // Fungsi untuk menyisipkan pesan rahasia menggunakan PVD
-void embedMessage(unsigned char* coverImage, const char* secretMessage) {
+void embedMessage(const char* coverImage, const char* secretMessage) {
     int width, height, channels, i;
     unsigned char* image = readPNG(coverImage, &width, &height, &channels);
 
-    int secretMessageLength = strlen(secretMessage) + 4;  // Add 4 bytes for the message length
+    int secretMessageLength = strlen(secretMessage);
     int secretMessageIndex = 0;
+
+    // Periksa apakah pesan rahasia dapat disisipkan dalam gambar
+    int maxMessageLength = (width * height * channels - 4) / 8; // Panjang maksimum pesan dalam byte
+    if (secretMessageLength > maxMessageLength) {
+        printf("Pesan rahasia terlalu panjang untuk disisipkan dalam gambar.\n");
+        return;
+    }
 
     // Sisipkan panjang pesan ke dalam gambar
     *((int*)image) = secretMessageLength;
@@ -32,15 +39,11 @@ void embedMessage(unsigned char* coverImage, const char* secretMessage) {
     for (i = 4; i < width * height * channels; i++) {
         if (secretMessageIndex < secretMessageLength) {
             int lsb = image[i] & 1;
-
-            // Ambil bit rahasia
             int secretBit = (secretMessage[secretMessageIndex / 8] >> (7 - (secretMessageIndex % 8))) & 1;
 
             // Sesuaikan nilai piksel sesuai aturan PVD
-            if (lsb != secretBit) {
-                if (image[i] < 255) {
-                    image[i]++;
-                }
+            if (lsb != secretBit && image[i] < 255) {
+                image[i]++;
             }
 
             secretMessageIndex++;
@@ -53,7 +56,7 @@ void embedMessage(unsigned char* coverImage, const char* secretMessage) {
     savePNG("stego_image.png", image, width, height);
 
     // Bebaskan memori
-    stbi_image_free(image);
+    free(image);
 }
 
 // Fungsi untuk mengekstraksi pesan tersembunyi menggunakan PVD
@@ -99,10 +102,10 @@ void extractMessage(const char* stegoImage) {
 int main() {
     unsigned char* coverImage = "lena.png";
     const char* stegoImage = "stego_image.png"; 
-    const char* secretMessage = "Hello";
+    const char* secretMessage = "Hi";
 
     embedMessage(coverImage, secretMessage);
-    // extractMessage(stegoImage);
+    extractMessage(stegoImage);
 
     return 0;
 }

@@ -6,7 +6,7 @@ unsigned char* readPNG(const char* filename, int* width, int* height, int* chann
 // to save Stego Image 
 void savePNG(const char* filename, unsigned char* data, int width, int height);
 // to embed message using PVD technique
-void embedMessage(unsigned char* coverImage, const char* secretMessage);
+void embedMessage(const char* coverImage, const char* secretMessage);
 // to extract message form stego image
 void extractMessage(const char* stegoImage);
 

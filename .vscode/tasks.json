@@ -10,11 +10,12 @@
                 "${workspaceFolder}/OneSecure/test_stb.c",
                 "-I${workspaceFolder}/OneSecure/include",
                 "-L${workspaceFolder}/OneSecure/include",
-                "-lFreeImage"
+                "-lFreeImage",
             ],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
+                "code-runner.ignoreSelection": true
             }
         }
     ]
