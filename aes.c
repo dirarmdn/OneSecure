@@ -1,6 +1,7 @@
 #include <stdio.h>  // for printf
 #include <stdlib.h> // for malloc, free
 #include "raihan.h"
+#include "dwika.h"
 
 enum errorCode
 {
