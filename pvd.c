@@ -8,23 +8,35 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-// Fungsi untuk membaca gambar PNG dan mengembalikan data pikselnya
+
+// Tujuan: membaca gambar PNG dan mengembalikan data pikselnya
+// Param : filename (nama file gambar yang akan dibaca), 
+//         width (lebar gambar dalam pixel), height (tinggi gambar dalam pixel), 
+//         channels (jumlah saluran warna RGB)
 unsigned char* readPNG(const char* filename, int* width, int* height, int* channels) {
     return stbi_load(filename, width, height, channels, STBI_rgb);
 }
 
-// Fungsi untuk menyimpan gambar PNG
+
+// Tujuan: menyimpan gambar PNG
+// Param : filename (nama file gambar yang akan disimpan), 
+//         data (hasil pemrosesan gambar), width (lebar gambar dalam pixel), height (tinggi gambar dalam pixel)
 void savePNG(const char* filename, unsigned char* data, int width, int height) {
     stbi_write_png(filename, width, height, 3, data, width * 3);
 }
 
-// Fungsi untuk menyisipkan pesan rahasia menggunakan PVD
-void embedMessage(const char* coverImage, const char* secretMessage) {
-    int width, height, channels, i;
+
+// Tujuan: untuk menyisipkan pesan rahasia menggunakan PVD
+// Param : coverImage (nama file gambar yang akan digunakan sebagai penutup),
+//         secretMessage (pesan rahasia yang akan disembunyikan)
+void embedMessage(const char* coverImage, const char* secretMessage)
+{
+    int width, height, channels, i; // deklarasi var untuk menyimpan informasi gambar
+    // membaca gambar dari file
     unsigned char* image = readPNG(coverImage, &width, &height, &channels);
 
-    int secretMessageLength = strlen(secretMessage);
-    int secretMessageIndex = 0;
+    int secretMessageLength = strlen(secretMessage); // menghitung panjang pesan rahasia
+    int secretMessageIndex = 0; // indeks untuk melacak posisi saat menyisipkan pesan
 
     // Periksa apakah pesan rahasia dapat disisipkan dalam gambar
     int maxMessageLength = (width * height * channels - 4) / 8; // Panjang maksimum pesan dalam byte
@@ -33,22 +45,24 @@ void embedMessage(const char* coverImage, const char* secretMessage) {
         return;
     }
 
-    // Sisipkan panjang pesan ke dalam gambar
+    // Sisipkan panjang pesan ke dalam empat byte pertama dari gambar
     *((int*)image) = secretMessageLength;
 
+    // Loop untuk menyisipkan pesan rahasia ke dalam gambar
     for (i = 4; i < width * height * channels; i++) {
-        if (secretMessageIndex < secretMessageLength) {
+        if (secretMessageIndex < secretMessageLength) { // Jika masih ada pesan yang harus disisipkan
+            // Ekstrak bit terakhir dari nilai warna piksel dan bit pesan rahasia
             int lsb = image[i] & 1;
             int secretBit = (secretMessage[secretMessageIndex / 8] >> (7 - (secretMessageIndex % 8))) & 1;
 
             // Sesuaikan nilai piksel sesuai aturan PVD
             if (lsb != secretBit && image[i] < 255) {
-                image[i]++;
+                image[i]++; // Tambahkan satu ke nilai piksel jika perlu
             }
 
-            secretMessageIndex++;
+            secretMessageIndex++; // Pindah ke bit pesan rahasia berikutnya
         } else {
-            break;
+            break; // Keluar dari loop jika pesan telah disisipkan semua
         }
     }
 
@@ -59,7 +73,8 @@ void embedMessage(const char* coverImage, const char* secretMessage) {
     free(image);
 }
 
-// Fungsi untuk mengekstraksi pesan tersembunyi menggunakan PVD
+
+// Fungsi untuk mengekstraksi pesan tersembunyi menggunakan PVD (failed)
 void extractMessage(const char* stegoImage) {
     int width, height, channels, i;
     unsigned char* image = readPNG(stegoImage, &width, &height, &channels);
