@@ -43,4 +43,3 @@ void aes_inv_sub_bytes(AES_State *state);
 void aes_inv_mix_columns(AES_State *state);
 
 #endif /* AES_H */
-
