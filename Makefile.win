@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = aes.o main.o
-LINKOBJ  = aes.o main.o
+OBJ      = aes.o main.o pvd.o pvdencode.o
+LINKOBJ  = aes.o main.o pvd.o pvdencode.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -29,3 +29,9 @@ aes.o: aes.c
 
 main.o: main.c
 	$(CPP) -c main.c -o main.o $(CXXFLAGS)
+
+pvd.o: pvd.c
+	$(CPP) -c pvd.c -o pvd.o $(CXXFLAGS)
+
+pvdencode.o: pvdencode.c
+	$(CPP) -c pvdencode.c -o pvdencode.o $(CXXFLAGS)
