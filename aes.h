@@ -2,21 +2,45 @@
 #define AES_H
 
 #include <stdint.h>
-#include <stdlib.h>
 
-// Data Type
-typedef uint8_t byte;
-typedef uint32_t word;
+#define NR 10  // Number of rounds for 128-bit key (adjust for other key lengths)
 
-// Implementation: subBytes
-void subBytes(unsigned char *state);
-// Implementation: shiftRows
-void shiftRows(unsigned char *state);
-void shiftRow(unsigned char *state, unsigned char nbr);
+// AES State (4x4 matrix)
+typedef struct {
+    uint8_t state[4][4];
+} AES_State;
 
-// Constant
-#define AES_BLOCK_SIZE 16
+// AES Key (128-bit key)
+typedef struct {
+    uint8_t key[16];
+} AES_Key;
 
-// 
+// Function to initialize AES state to all zeros
+void aes_init(AES_State *state);
 
-#endif
+// Function to perform AES substitution bytes operation
+void aes_sub_bytes(AES_State *state);
+
+// Function to perform AES shift rows operation
+void aes_shift_rows(AES_State *state);
+
+// Function to perform AES encryption
+void aes_encrypt(AES_State *state, const AES_Key *key);
+
+// Function to perform AES decryption
+void aes_decrypt(AES_State *state, const AES_Key *key);
+
+// Function to multiply two numbers in GF(2^8) (used in MixColumns and InvMixColumns)
+uint8_t aes_mul(uint8_t a, uint8_t b);
+
+// Function to perform inverse shift rows operation
+void aes_inv_shift_rows(AES_State *state);
+
+// Function to perform inverse substitution bytes operation
+void aes_inv_sub_bytes(AES_State *state);
+
+// Function to perform inverse mix columns operation
+void aes_inv_mix_columns(AES_State *state);
+
+#endif /* AES_H */
+
