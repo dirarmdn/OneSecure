@@ -1,5 +1,5 @@
-#ifndef RAIHAN_H
-#define RAIHAN_H
+#ifndef ALYA_H
+#define ALYA_H
 
 enum keySize {
     SIZE_16 = 16,
@@ -31,4 +31,4 @@ void invMixColumn(unsigned char *column);
 void aes_invMain(unsigned char *state, unsigned char *expandedKey, int nbrRounds);
 char aes_decrypt(unsigned char *input, unsigned char *output, unsigned char *key, enum keySize size);
 
-#endif // RAIHAN_H
+#endif // ALYA_H
