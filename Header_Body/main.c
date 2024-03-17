@@ -90,13 +90,6 @@ int main(int argc, char *argv[])
     {
         printf("%2.2x%c", decryptedtext[i], ((i + 1) % 16) ? ' ' : '\n');
     }
-
-    unsigned char* coverImage = "lena.png";
-    const char* stegoImage = "stego_image.png"; 
-    const char* secretMessage = "Hi";
-
-    embedMessage(coverImage, secretMessage);
-    extractMessage(stegoImage);
     
     return 0;
 }
