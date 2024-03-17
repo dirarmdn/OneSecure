@@ -1,6 +1,6 @@
 [Project]
-FileName=OneSecure.dev
-Name=OneSecure
+FileName=Krypto_AES.dev
+Name=Krypto_AES
 Type=1
 Ver=2
 ObjFiles=
@@ -19,7 +19,7 @@ ObjectOutput=
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=OneSecure.exe
+OverrideOutputName=
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=3
+UnitCount=6
 
 [VersionInfo]
 Major=1
@@ -39,19 +39,29 @@ Build=0
 LanguageID=1033
 CharsetID=1252
 CompanyName=
-FileVersion=1.0.0.0
+FileVersion=
 FileDescription=Developed using the Dev-C++ IDE
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=1.0.0.0
+ProductVersion=
 AutoIncBuildNr=0
 SyncProduct=1
 
+[Unit7]
+FileName=..\Header_Body\main_AES.c
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit1]
-FileName=raihan.h
+FileName=..\Header_Body\aes.c
 CompileCpp=1
 Folder=
 Compile=1
@@ -61,7 +71,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=aes.c
+FileName=..\Header_Body\aes.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -71,7 +81,37 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=main.c
+FileName=..\Header_Body\alya.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit4]
+FileName=..\Header_Body\dwika.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+FileName=..\Header_Body\raihan.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit6]
+FileName=..\Header_Body\main_AES.c
 CompileCpp=1
 Folder=
 Compile=1
