@@ -128,10 +128,7 @@ void core(unsigned char *word, int iteration)
  * key is a pointer to a non-expanded key
  */
 
-void expandKey(unsigned char *expandedKey,
-               unsigned char *key,
-               enum keySize size,
-               size_t expandedKeySize)
+void expandKey(unsigned char *expandedKey, unsigned char *key, enum keySize size,size_t expandedKeySize)
 {
     // current expanded keySize, in bytes
     int currentSize = 0;
@@ -337,50 +334,49 @@ char aes_encrypt(unsigned char *input, unsigned char *output, unsigned char *key
     unsigned char *expandedKey;
     unsigned char block[16];
 
+    // Menentukan jumlah putaran dan ukuran kunci yang diperluas berdasarkan ukuran kunci yang diberikan
     switch (size) {
         case SIZE_16:
-            nbrRounds = 10;
-            expandedKeySize = 176;
+            nbrRounds = 10; // Jumlah putaran untuk kunci 16 byte
+            expandedKeySize = 176; // Ukuran kunci yang diperluas untuk kunci 16 byte
             break;
         case SIZE_24:
-            nbrRounds = 12;
-            expandedKeySize = 208;
+            nbrRounds = 12; // Jumlah putaran untuk kunci 24 byte
+            expandedKeySize = 208; // Ukuran kunci yang diperluas untuk kunci 24 byte
             break;
         case SIZE_32:
-            nbrRounds = 14;
-            expandedKeySize = 240;
+            nbrRounds = 14; // Jumlah putaran untuk kunci 32 byte
+            expandedKeySize = 240; // Ukuran kunci yang diperluas untuk kunci 32 byte
             break;
         default:
-            return ERROR_AES_UNKNOWN_KEYSIZE;
+            return ERROR_AES_UNKNOWN_KEYSIZE; // Mengembalikan kesalahan jika ukuran kunci tidak diketahui
     }
 
+    // Mengalokasikan memori untuk kunci yang diperluas
     expandedKey = (unsigned char *)malloc(expandedKeySize * sizeof(unsigned char));
     if (expandedKey == NULL) {
-        return ERROR_MEMORY_ALLOCATION_FAILED;
+        return ERROR_MEMORY_ALLOCATION_FAILED; // Mengembalikan kesalahan jika alokasi memori gagal
     }
 
-    // Set the block values
+    // Menetapkan nilai-nilai blok menggunakan nilai-nilai dari input plaintext
     for (i = 0; i < 16; i++) {
         block[i] = input[i];
     }
 
-    // Expand the key
-    expandKey(expandedKey, key, size, expandedKeySize);
+    expandKey(expandedKey, key, size, expandedKeySize); // Memperluas kunci
+    aes_main(block, expandedKey, nbrRounds); // Melakukan enkripsi blok menggunakan kunci yang diperluas
 
-    // Encrypt the block using the expandedKey
-    aes_main(block, expandedKey, nbrRounds);
-
-    // Map the block into the output
+    // Memasukkan blok yang telah dienkripsi ke dalam output
     for (i = 0; i < 16; i++) {
         output[i] = block[i];
     }
 
-    // De-allocate memory for expandedKey
-    free(expandedKey);
+    free(expandedKey); // Membebaskan memori yang dialokasikan untuk kunci yang diperluas
     expandedKey = NULL;
 
-    return SUCCESS;
+    return SUCCESS; // Mengembalikan nilai sukses
 }
+
 
 void invSubBytes(unsigned char *state)
 {
@@ -501,47 +497,69 @@ char aes_decrypt(unsigned char *input, unsigned char *output, unsigned char *key
     unsigned char *expandedKey;
     unsigned char block[16];
 
+    // Menentukan jumlah putaran dan ukuran kunci yang diperluas berdasarkan ukuran kunci yang diberikan
     switch (size) {
         case SIZE_16:
-            nbrRounds = 10;
-            expandedKeySize = 176;
+            nbrRounds = 10; // Jumlah putaran untuk kunci 16 byte
+            expandedKeySize = 176; // Ukuran kunci yang diperluas untuk kunci 16 byte
             break;
         case SIZE_24:
-            nbrRounds = 12;
-            expandedKeySize = 208;
+            nbrRounds = 12; // Jumlah putaran untuk kunci 24 byte
+            expandedKeySize = 208; // Ukuran kunci yang diperluas untuk kunci 24 byte
             break;
         case SIZE_32:
-            nbrRounds = 14;
-            expandedKeySize = 240;
+            nbrRounds = 14; // Jumlah putaran untuk kunci 32 byte
+            expandedKeySize = 240; // Ukuran kunci yang diperluas untuk kunci 32 byte
             break;
         default:
-            return ERROR_AES_UNKNOWN_KEYSIZE;
+            return ERROR_AES_UNKNOWN_KEYSIZE; // Mengembalikan kesalahan jika ukuran kunci tidak diketahui
     }
 
+    // Mengalokasikan memori untuk kunci yang diperluas
     expandedKey = (unsigned char *)malloc(expandedKeySize * sizeof(unsigned char));
     if (expandedKey == NULL) {
-        return ERROR_MEMORY_ALLOCATION_FAILED;
+        return ERROR_MEMORY_ALLOCATION_FAILED; // Mengembalikan kesalahan jika alokasi memori gagal
     }
 
-    // Set the block values
+    // Menetapkan nilai-nilai blok menggunakan nilai-nilai dari input ciphertext
     for (int i = 0; i < 16; i++) {
         block[i] = input[i];
     }
 
-    // Expand the key
-    expandKey(expandedKey, key, size, expandedKeySize);
+    expandKey(expandedKey, key, size, expandedKeySize); // Memperluas kunci
+ 
+    aes_invMain(block, expandedKey, nbrRounds); // Melakukan dekripsi blok menggunakan kunci yang diperluas
 
-    // Decrypt the block using the expandedKey
-    aes_invMain(block, expandedKey, nbrRounds);
-
-    // Map the block into the output
+    // Memasukkan blok yang telah didekripsi ke dalam output
     for (int i = 0; i < 16; i++) {
         output[i] = block[i];
     }
 
-    // De-allocate memory for expandedKey
-    free(expandedKey);
+    free(expandedKey); // Membebaskan memori yang dialokasikan untuk kunci yang diperluas
     expandedKey = NULL;
 
-    return SUCCESS;
+    return SUCCESS; // Mengembalikan nilai sukses
 }
+
+
+void printHex(unsigned char *text, int length) {
+    // Melakukan iterasi melalui setiap byte dalam array text
+    for (int i = 0; i < length; i++) {
+        printf("%2.2x ", text[i]); // Mencetak setiap byte dalam format heksadesimal dua digit  di antara setiap byte
+    }
+    printf("\n");
+}
+
+void printASCII(unsigned char *text, int length) {
+    // Melakukan iterasi melalui setiap byte dalam array text
+    for (int i = 0; i < length; i++) {
+        // Memeriksa apakah byte saat ini adalah karakter cetak standar dalam ASCII (dari 0x20 hingga 0x7e)
+        if (text[i] >= 0x20 && text[i] <= 0x7e) {
+            printf("%c", text[i]); // mencetak karakter ASCII setelah di cek
+        } else {
+            printf(" "); // mencetak spasi untuk karakter tidak tercetak
+        }
+    }
+    printf("\n");
+}
+
