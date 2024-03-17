@@ -7,8 +7,9 @@
 #include <stdio.h>  // for printf
 #include <stdlib.h> // for malloc, free
 #include "raihan.h"
-#include "dhira.h"
 #include "dwika.h"
+#include "alya.h"
+
 
 int main(int argc, char *argv[])
 {
