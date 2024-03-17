@@ -1,89 +1,90 @@
-/* Basic implementation of AES in C
- *
- * Warning: THIS CODE IS ONLY FOR LEARNING PURPOSES
- *          NOT RECOMMENDED TO USE IT IN ANY PRODUCTS
- */
-
-#include <stdio.h>  // for printf
-#include <stdlib.h> // for malloc, free
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include "raihan.h"
 #include "dwika.h"
 #include "alya.h"
 
+#define MAX_TEXT_LENGTH 16
 
-int main(int argc, char *argv[])
-{
-    // the expanded keySize
-    int expandedKeySize = 176;
-
-    // the expanded key
-    unsigned char expandedKey[expandedKeySize];
-
-    // the cipher key
-    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
-
-    // the cipher key size
-    enum keySize size = SIZE_16;
-
-    // the plaintext
-    unsigned char plaintext[16] = {'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
-
-    // the ciphertext
-    unsigned char ciphertext[16];
-
-    // the decrypted text
-    unsigned char decryptedtext[16];
-
+int main() {
+    int option;
     int i;
-
-    printf("**************************************************\n");
-    printf("*   Basic implementation of AES algorithm in C   *\n");
-    printf("**************************************************\n");
-
-    printf("\nCipher Key (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        // Print characters in HEX format, 16 chars per line
-        printf("%2.2x%c", key[i], ((i + 1) % 16) ? ' ' : '\n');
-    }
-
-    // Test the Key Expansion
-    expandKey(expandedKey, key, size, expandedKeySize);
-
-    printf("\nExpanded Key (HEX format):\n");
-
-    for (i = 0; i < expandedKeySize; i++)
-    {
-        printf("%2.2x%c", expandedKey[i], ((i + 1) % 16) ? ' ' : '\n');
-    }
-
-    printf("\nPlaintext (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        printf("%2.2x%c", plaintext[i], ((i + 1) % 16) ? ' ' : '\n');
-    }
-
-    // AES Encryption
-    aes_encrypt(plaintext, ciphertext, key, SIZE_16);
-
-    printf("\nCiphertext (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        printf("%2.2x%c", ciphertext[i], ((i + 1) % 16) ? ' ' : '\n');
-    }
-
-    // AES Decryption
-    aes_decrypt(ciphertext, decryptedtext, key, SIZE_16);
-
-    printf("\nDecrypted text (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        printf("%2.2x%c", decryptedtext[i], ((i + 1) % 16) ? ' ' : '\n');
-    }
-
+    char inputText[MAX_TEXT_LENGTH];
+    unsigned char plaintext[MAX_TEXT_LENGTH];
+    unsigned char ciphertext[MAX_TEXT_LENGTH];
+    unsigned char decryptedtext[MAX_TEXT_LENGTH];
+    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
+    enum keySize size = SIZE_16;
+    
+    do {
+        printf("||=================================================||\n");
+        printf("||                WELCOME TO ONESECURE             ||\n");
+        printf("||=================================================||\n");
+    
+        printf("\nSelect an option:\n");
+        printf("1. Encrypt\n");
+        printf("2. Decrypt\n");
+        printf("0. Exit\n");
+        printf("Option (Only Real Number): ");
+        scanf("%d", &option);
+        
+        if (option == 1) {
+            do {
+                system("cls");
+                printf("=========================     OneSecure Encrypt     =========================\n");
+                printf("\nInput your message (up to 16 characters): ");
+                scanf("%s", inputText);
+                memset(plaintext, 0, MAX_TEXT_LENGTH);
+                memcpy(plaintext, inputText, strlen(inputText));
+                
+                if (strlen(inputText) > MAX_TEXT_LENGTH) {
+                    printf("\nError: Plaintext is too long. Please enter up to 16 characters.\n");
+                }
+            } while (strlen(inputText) > MAX_TEXT_LENGTH);
+            
+            aes_encrypt(plaintext, ciphertext, key, size);
+            
+            printf("Hiding Your Message\nProcessing ...");
+            sleep(2);
+            printf("\nYour Message Hide Successfully\n");
+            
+            printf("\n(VERY IMPORTANT!!!) keep it in your head\nCiphertext (HEXADECIMAL):\n");
+            printHex(ciphertext, MAX_TEXT_LENGTH);
+            printf("\n\n\n");
+        } else if (option == 2) {
+            do{
+            system("cls");
+	            printf("=========================     OneSecure Decrypt     =========================\n");
+	            printf("\nInput Your Ciphertext In HEXADECIMAL (separated by space): ");
+	            for (i = 0; i < MAX_TEXT_LENGTH; i++) {
+	                if (scanf("%2x", &ciphertext[i]) != 1) {
+	                    printf("\nError: Invalid input. Please enter a valid Ciphertext.\n");
+	                    while (getchar() != '\n'); // Membersihkan sisa input
+	                    break; // Keluar dari loop
+	                }
+	            }
+			}while (i < MAX_TEXT_LENGTH);
+            
+            aes_decrypt(ciphertext, decryptedtext, key, size);
+            
+            printf("Decrypt your message\n Processing...\n");
+            sleep(2);
+            printf("\nDecrypted text (HEXADECIMAL):\n");
+            printHex(decryptedtext, MAX_TEXT_LENGTH);
+            
+            printf("\nDecrypted text (ASCII):\n");
+            printASCII(decryptedtext, MAX_TEXT_LENGTH);
+            printf("\n\n\n");
+        } else if (option == 0) {
+            printf("\nExiting...\n");
+            sleep(2);
+        } else {
+            printf("\nInvalid option. Please try again.\n");
+        }
+    } while (option != 0);
+    
     return 0;
 }
+

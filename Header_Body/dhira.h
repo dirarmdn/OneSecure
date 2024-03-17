@@ -13,7 +13,4 @@ void savePNG(const char* filename, unsigned char* data, int width, int height);
 // Tujuan: memasukkan pesan dengan teknik Pixel Value Differencing
 void embedMessage(const char* coverImage, const char* secretMessage);
 
-// Tujuan: mengekstrak pesan rahasia pada gambar
-void extractMessage(const char* stegoImage);
-
 #endif
