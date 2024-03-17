@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 {
     const char* coverImage = "lena.png";
     const char* stegoImage = "stego_image.png";
-    const char* secretMessage = "hi dog";
+    const char* secretMessage = "hallo";
 
     embedMessage(coverImage, secretMessage);
     extractMessage(stegoImage);
