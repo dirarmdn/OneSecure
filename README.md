@@ -19,7 +19,8 @@ To get started with OneSecure, follow these steps:
    git clone https://github.com/dirarmdn/OneSecure.git
    cd onesecure
   
-## Acknowledgments
+## About Us
+1B / D3 - Informatics Engineering
 Our Team Member(s) 🤖:
 1. Alya Gustiani N. A (231511035) [https://github.com/alyagustiani]
 2. Dhira Ramadini (231511041) [https://github.com/dirarmdn]
