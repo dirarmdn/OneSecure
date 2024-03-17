@@ -1,86 +1,57 @@
-/* Basic implementation of AES in C
- *
- * Warning: THIS CODE IS ONLY FOR LEARNING PURPOSES
- *          NOT RECOMMENDED TO USE IT IN ANY PRODUCTS
- */
+#include <stdio.h>
+#include <stdlib.h>
+#include "alya.h" // Saya asumsikan file "alya.h" berisi definisi fungsi-fungsi yang diperlukan untuk AES
 
-#include <stdio.h>  // for printf
-#include <stdlib.h> // for malloc, free
-#include "alya.h"
-
-int main(int argc, char *argv[])
-{
-    // the expanded keySize
-    int expandedKeySize = 176;
-
-    // the expanded key
-    unsigned char expandedKey[expandedKeySize];
-
-    // the cipher key
+int main() {
+    // Key yang digunakan untuk enkripsi dan dekripsi
     unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
 
-    // the cipher key size
-    enum keySize size = SIZE_16;
+    // Plaintext yang akan dienkripsi
+    unsigned char plaintext[16];
 
-    // the plaintext
-    unsigned char plaintext[16] = {'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+    // Meminta pengguna untuk memasukkan plaintext
+    printf("Masukkan plaintext (16 karakter): ");
+    for (int i = 0; i < 16; i++) {
+        scanf(" %c", &plaintext[i]);
+    }
 
-    // the ciphertext
+    // Variabel untuk menyimpan ciphertext hasil enkripsi dan decryptedtext hasil dekripsi
     unsigned char ciphertext[16];
-
-    // the decrypted text
     unsigned char decryptedtext[16];
 
-    int i;
+    // Ukuran kunci (disesuaikan dengan implementasi)
+    enum keySize size = SIZE_16;
 
-    printf("**************************************************\n");
-    printf("*   Basic implementation of AES algorithm in C   *\n");
-    printf("**************************************************\n");
-
-    printf("\nCipher Key (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        // Print characters in HEX format, 16 chars per line
-        printf("%2.2x%c", key[i], ((i + 1) % 16) ? ' ' : '\n');
-    }
-
-    // Test the Key Expansion
+    // Memperoleh expanded key
+    int expandedKeySize = 176;
+    unsigned char expandedKey[expandedKeySize];
     expandKey(expandedKey, key, size, expandedKeySize);
 
-    printf("\nExpanded Key (HEX format):\n");
+    // Enkripsi
+    aes_encrypt(plaintext, ciphertext, expandedKey, size);
 
-    for (i = 0; i < expandedKeySize; i++)
-    {
-        printf("%2.2x%c", expandedKey[i], ((i + 1) % 16) ? ' ' : '\n');
+    // Dekripsi
+    aes_decrypt(ciphertext, decryptedtext, expandedKey, size);
+
+    // Menampilkan hasil
+    printf("Plaintext: ");
+    for (int i = 0; i < 16; i++) {
+        printf("%c ", plaintext[i]);
     }
+    printf("\n");
 
-    printf("\nPlaintext (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        printf("%2.2x%c", plaintext[i], ((i + 1) % 16) ? ' ' : '\n');
+    printf("Ciphertext: ");
+    for (int i = 0; i < 16; i++) {
+        printf("%02x ", ciphertext[i]);
     }
+    printf("\n");
 
-    // AES Encryption
-    aes_encrypt(plaintext, ciphertext, key, SIZE_16);
-
-    printf("\nCiphertext (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        printf("%2.2x%c", ciphertext[i], ((i + 1) % 16) ? ' ' : '\n');
+    printf("Decryptedtext: ");
+    for (int i = 0; i < 16; i++) {
+        printf("%c ", decryptedtext[i]);
     }
-
-    // AES Decryption
-    aes_decrypt(ciphertext, decryptedtext, key, SIZE_16);
-
-    printf("\nDecrypted text (HEX format):\n");
-
-    for (i = 0; i < 16; i++)
-    {
-        printf("%2.2x%c", decryptedtext[i], ((i + 1) % 16) ? ' ' : '\n');
-    }
+    printf("\n");
 
     return 0;
 }
+
