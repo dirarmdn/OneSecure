@@ -7,13 +7,9 @@
 #include <stdio.h>  // for printf
 #include <stdlib.h> // for malloc, free
 #include "raihan.h"
-#include "dhira.h"
 #include "dwika.h"
+#include "alya.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
 
 int main(int argc, char *argv[])
 {

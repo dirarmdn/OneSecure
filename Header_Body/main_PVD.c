@@ -113,14 +113,15 @@ void extractMessage(const char* stegoImage) {
     stbi_image_free(image);
 }
 
-
-int main() {
+int main(int argc, char *argv[])
+{
+	
     unsigned char* coverImage = "lena.png";
     const char* stegoImage = "stego_image.png"; 
     const char* secretMessage = "Hi";
 
     embedMessage(coverImage, secretMessage);
     extractMessage(stegoImage);
-
+    
     return 0;
 }

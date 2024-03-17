@@ -2,6 +2,7 @@
 #include <stdlib.h> // for malloc, free
 #include "raihan.h"
 #include "dwika.h"
+#include "alya.h"
 
 enum errorCode
 {
