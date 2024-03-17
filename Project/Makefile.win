@@ -1,15 +1,15 @@
-# Project: Stegano_PVD
+# Project: Krypto_AES
 # Makefile created by Dev-C++ 5.11
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = ../Header_Body/main_PVD.o ../Header_Body/pvdencode.o
-LINKOBJ  = ../Header_Body/main_PVD.o ../Header_Body/pvdencode.o
+OBJ      = ../Header_Body/aes.o ../Header_Body/main_AES.o
+LINKOBJ  = ../Header_Body/aes.o ../Header_Body/main_AES.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
-BIN      = Stegano_PVD.exe
+BIN      = Krypto_AES.exe
 CXXFLAGS = $(CXXINCS) 
 CFLAGS   = $(INCS) 
 RM       = rm.exe -f
@@ -24,8 +24,8 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-../Header_Body/main_PVD.o: ../Header_Body/main_PVD.c
-	$(CPP) -c ../Header_Body/main_PVD.c -o ../Header_Body/main_PVD.o $(CXXFLAGS)
+../Header_Body/aes.o: ../Header_Body/aes.c
+	$(CPP) -c ../Header_Body/aes.c -o ../Header_Body/aes.o $(CXXFLAGS)
 
-../Header_Body/pvdencode.o: ../Header_Body/pvdencode.c
-	$(CPP) -c ../Header_Body/pvdencode.c -o ../Header_Body/pvdencode.o $(CXXFLAGS)
+../Header_Body/main_AES.o: ../Header_Body/main_AES.c
+	$(CPP) -c ../Header_Body/main_AES.c -o ../Header_Body/main_AES.o $(CXXFLAGS)

@@ -50,16 +50,6 @@ ProductVersion=
 AutoIncBuildNr=0
 SyncProduct=1
 
-[Unit7]
-FileName=..\Header_Body\main_AES.c
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit1]
 FileName=..\Header_Body\aes.c
 CompileCpp=1
