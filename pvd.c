@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dhira.h"
+#include "syahid.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -77,46 +78,62 @@ void embedMessage(const char* coverImage, const char* secretMessage)
 // Fungsi untuk mengekstraksi pesan tersembunyi menggunakan PVD (failed)
 void extractMessage(const char* stegoImage) {
     int width, height, channels, i;
+
+    // Read image data
     unsigned char* image = readPNG(stegoImage, &width, &height, &channels);
-
-    int secretMessageLength = *((int*)image);
-    int secretMessageIndex = 32;
-    char secretMessage[1024];
-
-    // Initialize the secretMessage array
-    memset(secretMessage, 0, sizeof(secretMessage));
-
-    // Cetak pesan tersembunyi
-    printf("Extracted Message: ");
-    for (i = 0; i < secretMessageLength; i++) {
-        char currentByte = 0;
-        for (int j = 0; j < 8; j++) {
-            // Ambil bit terakhir dari nilai piksel
-            int lsb = image[secretMessageIndex] & 1;
-
-            // Masukkan bit terakhir ke dalam currentByte
-            currentByte |= lsb << (7 - j);
-            secretMessageIndex++;
-
-            // Jika sudah membaca cukup bit untuk panjang pesan, baca pesan sebenarnya
-            if (secretMessageIndex >= width * height * channels) {
-                break;
-            }
-        }
-        secretMessage[i] = currentByte;
+    if (image == NULL) {
+        printf("Error: Failed to read stego image.\n");
+        return;
     }
 
-    // Cetak pesan tersembunyi dalam format ASCII
-    printf("%s\n", secretMessage);
+    // Extract message length from the first 4 bytes
+    int messageLength = *((int*)image);
 
-    // Bebaskan memori
-    stbi_image_free(image);
+    // Allocate memory for extracted message (including null terminator)
+    char* extractedMessage = (char*)malloc((messageLength + 1) * sizeof(char));
+    if (extractedMessage == NULL) {
+        printf("Error: Memory allocation failed.\n");
+        free(image);
+        return;
+    }
+
+    // Extract message bit-by-bit with proper handling of message length
+    int messageIndex = 0;
+    int currentByte = 0;
+    int index = 0; // Index for extracted message array
+
+    while (messageIndex < messageLength * 8 && index < messageLength) {
+        // Extract LSB of pixel
+        int lsb = image[4 + i] & 1; // Skip the first 4 bytes containing message length
+
+        // Accumulate bit into current byte
+        currentByte |= lsb << (7 - (messageIndex % 8));
+        messageIndex++;
+
+        // If enough bits collected for a byte, store it in the message string
+        if (messageIndex % 8 == 0) {
+            extractedMessage[index++] = currentByte;
+            currentByte = 0;  // Reset for the next character
+        }
+
+        i++; // Increment image data index (avoiding first 4 bytes)
+    }
+
+    // Add null terminator to the extracted message
+    extractedMessage[index] = '\0';
+
+    // Print the extracted message
+    printf("Extracted Message: %s\n", extractedMessage);
+
+    // Free memory
+    free(extractedMessage);
+    free(image);
 }
 
 
 int main() {
     unsigned char* coverImage = "lena.png";
-    const char* stegoImage = "stego_image.png"; 
+    const char* stegoImage = "stego_image.png";
     const char* secretMessage = "Hi";
 
     embedMessage(coverImage, secretMessage);
