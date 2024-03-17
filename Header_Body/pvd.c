@@ -88,6 +88,8 @@ void embedMessage(const char* coverImage, const char* secretMessage) {
     free(image);
 }
 
+// Tujuan : Mengekstrak pesan rahasia yang sudah disisipkan pada gambar stego
+// param : stegoImage (nama file gambar stego yang akan diesktrak pesannya)
 void extractMessage(const char* stegoImage) {
     int width, height, channels;
     unsigned char* image = readPNG(stegoImage, &width, &height, &channels);

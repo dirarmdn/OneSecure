@@ -69,3 +69,16 @@ AES :
 17. addRoundKey
 18. mixColumns
 19. mixColumn
+20. aes_round
+21. createRoundKey
+22. aes_main
+23. invMixColumns
+24. invMixColumn
+25. aes_invMain
+
+PVD
+
+1. readPNG
+2. savePNG
+3. embedMessage
+4. extractMessage
