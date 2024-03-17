@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=9
+UnitCount=8
 
 [VersionInfo]
 Major=1
@@ -51,27 +51,27 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=lena.png
+FileName=..\Header_Body\dhira.h
 CompileCpp=1
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit2]
-FileName=..\Header\dhira.h
 Folder=
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit2]
+FileName=..\Header_Body\lena.png
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 CompileCpp=1
 
 [Unit3]
-FileName=..\Header\pvd_process.h
+FileName=..\Header_Body\main_PVD.c
 CompileCpp=1
 Folder=
 Compile=1
@@ -81,7 +81,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=..\Header\stb_image.h
+FileName=..\Header_Body\pvd_process.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -91,7 +91,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=..\Header\stb_image_write.h
+FileName=..\Header_Body\pvdencode.c
 CompileCpp=1
 Folder=
 Compile=1
@@ -101,7 +101,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=..\Header\syahid.h
+FileName=..\Header_Body\stb_image.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -111,7 +111,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=..\Body\main.c
+FileName=..\Header_Body\stb_image_write.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -121,17 +121,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=..\Body\pvd.c
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit9]
-FileName=..\Body\pvdencode.c
+FileName=..\Header_Body\syahid.h
 CompileCpp=1
 Folder=
 Compile=1
