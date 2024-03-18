@@ -41,7 +41,7 @@ void embedMessage(const char* coverImage, const char* secretMessage) {
     int secretMessageLength = strlen(secretMessage) * 8;
     int secretMessageIndex = 0;
 
-    // Hitung kapasitas gambar
+    // Hitung kapasitas gambar, dikurangi 4 byte pertama untuk menyimpan panjang pesan
     int maxMessageLength = (width * height * channels - 4) * 8;
 
     // Pastikan panjang pesan tidak melebihi kapasitas gambar
@@ -150,7 +150,7 @@ void extractMessage(const char* stegoImage) {
     free(image);
 }
 
-int main(int argc, char *argv[])
+int mains(int argc, char *argv[])
 {
     const char* coverImage = "lena.png";
     const char* stegoImage = "stego_image.png";

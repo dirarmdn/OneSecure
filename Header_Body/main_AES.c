@@ -5,35 +5,47 @@
 #include "raihan.h"
 #include "dwika.h"
 #include "alya.h"
+#include "dhira.h"
+#include "syahid.h"
 
 #define MAX_TEXT_LENGTH 16
 
 int main() {
-    int option;
-    int i;
+
+    int option, i, choice;
     char inputText[MAX_TEXT_LENGTH];
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
     unsigned char decryptedtext[MAX_TEXT_LENGTH];
     unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
     enum keySize size = SIZE_16;
+    char cover_image[100], stego_image[100], secret_message[100];
+    const char* secretMessage;
+	const char* coverImage;
+	const char* stegoImage;
+    char menu;
     
-    do {
+    for (;;) {
+        system("cls");
         printf("||=================================================||\n");
-        printf("||                WELCOME TO ONESECURE             ||\n");
+        printf("||                WELCOME TO OneSecure             ||\n");
         printf("||=================================================||\n");
     
         printf("\nSelect an option:\n");
-        printf("1. Encrypt\n");
-        printf("2. Decrypt\n");
+        printf("1. Encrypt with AES\n");
+        printf("2. Decrypt with AES\n");
+        printf("3. Encrypt with PVD\n");
+        printf("4. Decrypt with PVD\n");
         printf("0. Exit\n");
         printf("Option (Only Real Number): ");
         scanf("%d", &option);
         
-        if (option == 1) {
+        switch (option)
+        {
+            case 1:
             do {
                 system("cls");
-                printf("=========================     OneSecure Encrypt     =========================\n");
+                printf("=========================     OneSecure Encrypt AES     =========================\n");
                 printf("\nInput your message (up to 16 characters): ");
                 scanf("%s", inputText);
                 memset(plaintext, 0, MAX_TEXT_LENGTH);
@@ -53,10 +65,12 @@ int main() {
             printf("\n(VERY IMPORTANT!!!) keep it in your head\nCiphertext (HEXADECIMAL):\n");
             printHex(ciphertext, MAX_TEXT_LENGTH);
             printf("\n\n\n");
-        } else if (option == 2) {
-            do{
+
+            break;
+        case 2:
+            do {
             system("cls");
-	            printf("=========================     OneSecure Decrypt     =========================\n");
+	            printf("=========================     OneSecure Decrypt AES     =========================\n");
 	            printf("\nInput Your Ciphertext In HEXADECIMAL (separated by space): ");
 	            for (i = 0; i < MAX_TEXT_LENGTH; i++) {
 	                if (scanf("%2x", &ciphertext[i]) != 1) {
@@ -65,7 +79,7 @@ int main() {
 	                    break; // Keluar dari loop
 	                }
 	            }
-			}while (i < MAX_TEXT_LENGTH);
+			} while (i < MAX_TEXT_LENGTH);
             
             aes_decrypt(ciphertext, decryptedtext, key, size);
             
@@ -77,14 +91,47 @@ int main() {
             printf("\nDecrypted text (ASCII):\n");
             printASCII(decryptedtext, MAX_TEXT_LENGTH);
             printf("\n\n\n");
-        } else if (option == 0) {
+            break;
+        case 3:
+            system("cls");
+            printf("=========================     OneSecure Encrypt PVD     =========================\n");
+            printf("Enter your secret message: ");
+            scanf(" %s", secret_message);
+            secretMessage = secret_message;
+            printf("Enter your image name: ");
+            scanf(" %s", cover_image);
+            coverImage = cover_image;
+            printf("Enter your output image name: ");
+            scanf(" %s", stego_image);
+    		stegoImage = stego_image;
+            embedMessage(coverImage, secretMessage);
+            break;
+        case 4:
+            system("cls");
+            printf("=========================     OneSecure Decrypt PVD     =========================\n");
+            printf("Enter your image name: ");
+            scanf(" %s", stego_image);
+            stegoImage = stego_image;
+            extractMessage(stegoImage);
+            break;
+        case 0:
             printf("\nExiting...\n");
             sleep(2);
-        } else {
-            printf("\nInvalid option. Please try again.\n");
+            exit(0);
+            break;
+        default:
+            printf("\n invalid option. Please try again.\n");
         }
-    } while (option != 0);
+
+        printf("Back to menu? (Y/N) \n");
+        scanf(" %c", &menu);
+
+        if (menu != 'Y' && menu != 'y') {
+            break;
+        }
     
+    }
     return 0;
+
 }
 

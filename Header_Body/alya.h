@@ -8,4 +8,4 @@ void invSubBytes(unsigned char *state);
 void invShiftRows(unsigned char *state);
 void invShiftRow(unsigned char *state, unsigned char nbr);
 
-#endif // ALYA_H
+#endif
