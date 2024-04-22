@@ -18,10 +18,7 @@ void mixColumns(unsigned char *state);
 void mixColumn(unsigned char *column);
 void aes_round(unsigned char *state, unsigned char *roundKey);
 void createRoundKey(unsigned char *expandedKey, unsigned char *roundKey);
-void aes_main(unsigned char *state, unsigned char *expandedKey, int nbrRounds);
-void invMixColumns(unsigned char *state);
-void invMixColumn(unsigned char *column);
-void aes_invMain(unsigned char *state, unsigned char *expandedKey, int nbrRounds);
+
 
 
 #endif // RAIHAN_H
