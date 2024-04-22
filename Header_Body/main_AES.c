@@ -22,7 +22,6 @@ int main() {
     char cover_image[100], stego_image[100], secret_message[100];
     const char* secretMessage;
 	const char* coverImage;
-	const char* stegoImage;
     char menu;
     
     for (;;) {
@@ -96,23 +95,19 @@ int main() {
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
             printf("Enter your secret message: ");
-            scanf(" %s", secret_message);
-            secretMessage = secret_message;
+            scanf(" %[^\n]", secret_message);
             printf("Enter your image name: ");
             scanf(" %s", cover_image);
-            coverImage = cover_image;
             printf("Enter your output image name: ");
             scanf(" %s", stego_image);
-    		stegoImage = stego_image;
-            embedMessage(coverImage, secretMessage);
+            embedMessage(cover_image, secret_message, stego_image);
             break;
         case 4:
             system("cls");
             printf("=========================     OneSecure Decrypt PVD     =========================\n");
             printf("Enter your image name: ");
             scanf(" %s", stego_image);
-            stegoImage = stego_image;
-            extractMessage(stegoImage);
+            extractMessage(stego_image);
             break;
         case 0:
             printf("\nExiting...\n");

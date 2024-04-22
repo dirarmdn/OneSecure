@@ -28,7 +28,7 @@ void savePNG(const char* filename, unsigned char* data, int width, int height) {
 // Tujuan: untuk menyisipkan pesan rahasia menggunakan PVD
 // Param : coverImage (nama file gambar yang akan digunakan sebagai penutup),
 //         secretMessage (pesan rahasia yang akan disembunyikan)
-void embedMessage(const char* coverImage, const char* secretMessage) {
+void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage) {
     int width, height, channels;
     unsigned char* image = readPNG(coverImage, &width, &height, &channels);
 
@@ -82,7 +82,7 @@ void embedMessage(const char* coverImage, const char* secretMessage) {
     }
 
     // Simpan gambar stego
-    savePNG("stego_image.png", image, width, height);
+    savePNG(stegoImage, image, width, height);
 
     // Bebaskan memori gambar
     free(image);
@@ -150,14 +150,14 @@ void extractMessage(const char* stegoImage) {
     free(image);
 }
 
-int mains(int argc, char *argv[])
-{
-    const char* coverImage = "lena.png";
-    const char* stegoImage = "stego_image.png";
-    const char* secretMessage = "hallo";
+// int mains(int argc, char *argv[])
+// {
+//     const char* coverImage = "lena.png";
+//     const char* stegoImage = "stego_image.png";
+//     const char* secretMessage = "hallo";
 
-    embedMessage(coverImage, secretMessage);
-    extractMessage(stegoImage);
+//     embedMessage(coverImage, secretMessage);
+//     extractMessage(stegoImage);
     
-    return 0;
-}
+//     return 0;
+// }
