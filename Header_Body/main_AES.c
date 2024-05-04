@@ -94,13 +94,17 @@ int main() {
         case 3:
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
+            // printf("1. Encrypt JPG file\n");
+            // printf("2. Encrypt PNG file\n");
+            // printf("Enter choice: ");
+            // scanf("%d", &extention);
             printf("Enter your secret message: ");
             scanf(" %[^\n]", secret_message);
             printf("Enter your image name: ");
             scanf(" %s", cover_image);
             printf("Enter your output image name: ");
             scanf(" %s", stego_image);
-            embedMessage(cover_image, secret_message, stego_image);
+            embed_process(cover_image, secret_message, stego_image);
             break;
         case 4:
             system("cls");
