@@ -34,9 +34,13 @@ void insertRandNumber (address *p);
 // Param(s) : head (parameter Input-Output), data (parameter input)
 void insertNode(address *head, infotype data);
 
+// Tujuan : Menghitung jumlah banyak node dalam linked list
+// Param : head (parameter Input-Output)
+int countList(address head);
+
 // Tujuan : Konversi linked list kembali ke array
 // Param(s) : head (parameter Input-Output), array (parameter Input-Output)
-void linkedListToArray(address head, infotype *array);
+void linkedListToArray(address head, unsigned char* array);
 
 // Tujuan: membaca gambar PNG dan mengembalikan data pikselnya
 // Param : filename (nama file gambar yang akan dibaca), 

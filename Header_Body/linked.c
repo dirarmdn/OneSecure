@@ -76,7 +76,7 @@ int countList(address head) {
     return count;
 }
 
-void linkedListToArray(address head, infotype *array) {
+void linkedListToArray(address head, unsigned char* array) {
     address pCur = head;
     int i = 0;
     while (pCur != NULL) {

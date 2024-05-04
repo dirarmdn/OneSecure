@@ -3,34 +3,40 @@
 #include <string.h>
 #include "dhira.h"
 #include "syahid.h"
+#include <dirent.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-
-// Tujuan: membaca gambar PNG dan mengembalikan data pikselnya
-// Param : filename (nama file gambar yang akan dibaca), 
-//         width (lebar gambar dalam pixel), height (tinggi gambar dalam pixel), 
-//         channels (jumlah saluran warna RGB)
-unsigned char* readPNG(const char* filename, int* width, int* height, int* channels) {
+unsigned char* readIMG(const char* filename, int* width, int* height, int* channels) {
     return stbi_load(filename, width, height, channels, STBI_rgb);
 }
 
-// Tujuan: menyimpan gambar PNG
-// Param : filename (nama file gambar yang akan disimpan), 
-//         data (hasil pemrosesan gambar), width (lebar gambar dalam pixel), height (tinggi gambar dalam pixel)
 void savePNG(const char* filename, unsigned char* data, int width, int height) {
-    stbi_write_png(filename, width, height, 3, data, width * 3);
+    stbi_write_png(filename, width, height, 3, data, width * 3);        
 }
 
-// Tujuan: untuk menyisipkan pesan rahasia menggunakan PVD
-// Param : coverImage (nama file gambar yang akan digunakan sebagai penutup),
-//         secretMessage (pesan rahasia yang akan disembunyikan)
+void embed_process (const char* coverImage, const char* secretMessage, const char* stegoImage) {
+    int i, size;
+    address head = NULL;
+
+    for (i = 0; i < strlen(secretMessage); i++) {
+        insertNode(&head, secretMessage[i]);
+    }
+
+	insertRandNumber(&head);
+    size = countList(head);
+	unsigned char input[size];
+	linkedListToArray(head, input);
+
+    embedMessage(coverImage, secretMessage, stegoImage);
+}
+
 void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage) {
     int width, height, channels;
-    unsigned char* image = readPNG(coverImage, &width, &height, &channels);
+    unsigned char* image = readIMG(coverImage, &width, &height, &channels);
 
     if (image == NULL) {
         printf("Error: Gagal membaca gambar %s.\n", coverImage);
@@ -83,7 +89,7 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
 
     // Simpan gambar stego
     savePNG(stegoImage, image, width, height);
-
+    
     // Bebaskan memori gambar
     free(image);
 }
@@ -92,7 +98,7 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
 // param : stegoImage (nama file gambar stego yang akan diesktrak pesannya)
 void extractMessage(const char* stegoImage) {
     int width, height, channels;
-    unsigned char* image = readPNG(stegoImage, &width, &height, &channels);
+    unsigned char* image = readIMG(stegoImage, &width, &height, &channels);
 
     if (image == NULL) {
         printf("Error: Gagal membaca gambar stego %s.\n", stegoImage);
@@ -149,15 +155,3 @@ void extractMessage(const char* stegoImage) {
     free(extractedMessage);
     free(image);
 }
-
-// int mains(int argc, char *argv[])
-// {
-//     const char* coverImage = "lena.png";
-//     const char* stegoImage = "stego_image.png";
-//     const char* secretMessage = "hallo";
-
-//     embedMessage(coverImage, secretMessage);
-//     extractMessage(stegoImage);
-    
-//     return 0;
-// }
