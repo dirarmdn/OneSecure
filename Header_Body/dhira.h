@@ -3,7 +3,7 @@
 /* Dibuat oleh : Dhira Ramadini @dirarmdn 2024 */
 #ifndef DHIRA_H
 #define DHIRA_H
-#include "boolean.h"
+#include "../src/package/boolean.h"
 
 
 #define data(P) (P)->data
@@ -48,21 +48,26 @@ void linkedListToArray(address head, unsigned char* array);
 //         channels (jumlah saluran warna RGB)
 unsigned char* readIMG(const char* filename, int* width, int* height, int* channels);
 
-// Tujuan: menyimpan file PNG yang sudah dimasukkan pesan
+// Tujuan: menyimpan gambar stego format JPG
+// Param(s) : filename (nama file gambar yang akan disimpan),
+//            data (hasil pemrosesan gambar), width (lebar gambar dalam pixel), height (tinggi gambar dalam pixel)
 void savePNG(const char* filename, unsigned char* data, int width, int height);
+
+// Tujuan: menyimpan gambar stego format JPG
+// Param(s) : filename (nama file gambar yang akan disimpan),
+//            data (hasil pemrosesan gambar), width (lebar gambar dalam pixel), height (tinggi gambar dalam pixel)
+void saveJPG(const char* filename, unsigned char* data, int width, int height);
 
 // Tujuan: untuk menyisipkan pesan rahasia menggunakan PVD
 // Param : coverImage (nama file gambar yang akan digunakan sebagai penutup),
 //         secretMessage (pesan rahasia yang akan disembunyikan)
-void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage);
+void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage, int format);
 
 // Tujuan : untuk menyatukan proses penyisipan pesan mulai dari pemrosesan
 // pesan rahasia sampai embedding to image
-void embed_process (const char* coverImage, const char* secretMessage, const char* stegoImage);
+void embed_process (const char* coverImage, const char* secretMessage, const char* stegoImage, int format);
 
-// Tujuan: menyimpan gambar stego
-// Param(s) : filename (nama file gambar yang akan disimpan),
-//            data (hasil pemrosesan gambar), width (lebar gambar dalam pixel), height (tinggi gambar dalam pixel)
+
 void saveIMG(const char* filename, unsigned char* data, int width, int height, int extention);
 
 #endif

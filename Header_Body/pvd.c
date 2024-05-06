@@ -6,9 +6,9 @@
 #include <dirent.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "../src/package/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "../src/package/stb_image_write.h"
 
 unsigned char* readIMG(const char* filename, int* width, int* height, int* channels) {
     return stbi_load(filename, width, height, channels, STBI_rgb);
@@ -18,7 +18,11 @@ void savePNG(const char* filename, unsigned char* data, int width, int height) {
     stbi_write_png(filename, width, height, 3, data, width * 3);        
 }
 
-void embed_process (const char* coverImage, const char* secretMessage, const char* stegoImage) {
+void saveJPG(const char* filename, unsigned char* data, int width, int height) {
+    stbi_write_jpg(filename, width, height, 3, data, width * 3);
+}
+
+void embed_process(const char* coverImage, const char* secretMessage, const char* stegoImage, int format) {
     int i, size;
     address head = NULL;
 
@@ -31,10 +35,10 @@ void embed_process (const char* coverImage, const char* secretMessage, const cha
 	unsigned char input[size];
 	linkedListToArray(head, input);
 
-    embedMessage(coverImage, secretMessage, stegoImage);
+    embedMessage(coverImage, secretMessage, stegoImage, format);
 }
 
-void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage) {
+void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage, int format) {
     int width, height, channels;
     unsigned char* image = readIMG(coverImage, &width, &height, &channels);
 
@@ -88,8 +92,12 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
     }
 
     // Simpan gambar stego
-    savePNG(stegoImage, image, width, height);
-    
+    if (format == 2) {
+        savePNG(stegoImage, image, width, height);    
+    } else {
+        saveJPG(stegoImage, image, width, height);
+    }
+        
     // Bebaskan memori gambar
     free(image);
 }
