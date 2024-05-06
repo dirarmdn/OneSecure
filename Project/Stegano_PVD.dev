@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=8
+UnitCount=9
 
 [VersionInfo]
 Major=1
@@ -126,6 +126,15 @@ CompileCpp=1
 Folder=
 Compile=1
 Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
+FileName=..\Header_Body\stego_image.png
+Folder=
+Compile=0
+Link=0
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=

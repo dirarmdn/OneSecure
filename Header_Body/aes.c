@@ -178,34 +178,35 @@ void expandKey(unsigned char *expandedKey, unsigned char *key, enum keySize size
 void subBytes(unsigned char *state)
 {
     int i;
-    /* substitute all the values from the state with the value in the SBox
-     * using the state value as index for the SBox
-     */
+    // Looping untuk mengganti setiap byte dalam state dengan nilai dari SBox
+    // menggunakan nilai byte dalam state sebagai indeks untuk SBox
     for (i = 0; i < 16; i++)
-        state[i] = getSBoxValue(state[i]);
+        state[i] = getSBoxValue(state[i]); // Mengganti byte dengan nilai dari SBox
 }
 
 void shiftRows(unsigned char *state)
 {
     int i;
-    // iterate over the 4 rows and call shiftRow() with that row
+    // Iterasi melalui 4 baris dan memanggil fungsi shiftRow() untuk setiap baris
     for (i = 0; i < 4; i++)
-        shiftRow(state + i * 4, i);
+        shiftRow(state + i * 4, i); // Memanggil shiftRow() dengan baris state yang sesuai
 }
 
 void shiftRow(unsigned char *state, unsigned char nbr)
 {
     int i, j;
     unsigned char tmp;
-    // each iteration shifts the row to the left by 1
+    // Setiap iterasi menggeser baris ke kiri sebanyak nbr kali
     for (i = 0; i < nbr; i++)
     {
-        tmp = state[0];
+        tmp = state[0]; // Menyimpan nilai byte pertama dalam baris
+        // Menggeser setiap byte dalam baris ke kiri sebanyak 1 byte
         for (j = 0; j < 3; j++)
             state[j] = state[j + 1];
-        state[3] = tmp;
+        state[3] = tmp; // Memasukkan nilai yang disimpan ke byte terakhir
     }
 }
+
 
 void addRoundKey(unsigned char *state, unsigned char *roundKey)
 {
@@ -376,36 +377,35 @@ char aes_encrypt(unsigned char *input, unsigned char *output, unsigned char *key
     return SUCCESS; // Mengembalikan nilai sukses
 }
 
-
 void invSubBytes(unsigned char *state)
 {
     int i;
-    /* substitute all the values from the state with the value in the SBox
-     * using the state value as index for the SBox
-     */
+    // Looping untuk mengganti setiap byte dalam state dengan nilai dari SBoxInvert
+    // menggunakan nilai byte dalam state sebagai indeks untuk SBoxInvert
     for (i = 0; i < 16; i++)
-        state[i] = getSBoxInvert(state[i]);
+        state[i] = getSBoxInvert(state[i]); // Mengganti byte dengan nilai dari SBoxInvert
 }
 
 void invShiftRows(unsigned char *state)
 {
     int i;
-    // iterate over the 4 rows and call invShiftRow() with that row
+    // Iterasi melalui 4 baris dan memanggil fungsi invShiftRow() untuk setiap baris
     for (i = 0; i < 4; i++)
-        invShiftRow(state + i * 4, i);
+        invShiftRow(state + i * 4, i); // Memanggil invShiftRow() dengan baris state yang sesuai
 }
 
 void invShiftRow(unsigned char *state, unsigned char nbr)
 {
     int i, j;
     unsigned char tmp;
-    // each iteration shifts the row to the right by 1
+    // Setiap iterasi menggeser baris ke kanan sebanyak nbr kali
     for (i = 0; i < nbr; i++)
     {
-        tmp = state[3];
+        tmp = state[3]; // Menyimpan nilai byte terakhir dalam baris
+        // Menggeser setiap byte dalam baris ke kanan sebanyak 1 byte
         for (j = 3; j > 0; j--)
             state[j] = state[j - 1];
-        state[0] = tmp;
+        state[0] = tmp; // Memasukkan nilai yang disimpan ke byte pertama
     }
 }
 

@@ -1,41 +1,54 @@
-#include <stdio.h> // Library standar input-output
-#include <stdlib.h> // Library standar untuk fungsi-fungsi umum
-#include <string.h> // Library standar untuk operasi string
-#include <unistd.h> // Library standar untuk fungsi sleep()
-#include "raihan.h" // Header file untuk fungsi-fungsi Rahian
-#include "dwika.h" // Header file untuk fungsi-fungsi Dwika
-#include "alya.h" // Header file untuk fungsi-fungsi Alya
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include "raihan.h"
+#include "dwika.h"
+#include "alya.h"
+#include "dhira.h"
+#include "syahid.h"
 
 #define MAX_TEXT_LENGTH 16 // Mendefinisikan panjang maksimum teks
 
-int main() { // Fungsi utama program
-    int option; // Variabel untuk menyimpan pilihan menu
-    int i; // Variabel iterasi
-    char inputText[MAX_TEXT_LENGTH]; // Array untuk menyimpan teks input
-    unsigned char plaintext[MAX_TEXT_LENGTH]; // Array untuk menyimpan teks plainteks
-    unsigned char ciphertext[MAX_TEXT_LENGTH]; // Array untuk menyimpan teks sandi
-    unsigned char decryptedtext[MAX_TEXT_LENGTH]; // Array untuk menyimpan teks terdekripsi
-    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'}; // Kunci enkripsi
-    enum keySize size = SIZE_16; // Ukuran kunci
+int main() {
+
+    int option, i, choice;
+    char inputText[MAX_TEXT_LENGTH];
+    unsigned char plaintext[MAX_TEXT_LENGTH];
+    unsigned char ciphertext[MAX_TEXT_LENGTH];
+    unsigned char decryptedtext[MAX_TEXT_LENGTH];
+    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
+    enum keySize size = SIZE_16;
+    char cover_image[100], stego_image[100], secret_message[100];
+    const char* secretMessage;
+	const char* coverImage;
+    char menu;
     
-    do { // Mulai loop utama
-        printf("||=================================================||\n"); // Cetak header program
-        printf("||                WELCOME TO ONESECURE             ||\n");
+    for (;;) {
+        // system("cls");
+        printf("||=================================================||\n");
+        printf("||                WELCOME TO OneSecure             ||\n");
         printf("||=================================================||\n");
     
-        printf("\nSelect an option:\n"); // Cetak menu pilihan
-        printf("1. Encrypt\n");
-        printf("2. Decrypt\n");
+        printf("\nSelect an option:\n");
+        printf("1. Encrypt with AES\n");
+        printf("2. Decrypt with AES\n");
+        printf("3. Encrypt with PVD\n");
+        printf("4. Decrypt with PVD\n");
         printf("0. Exit\n");
         printf("Option (Only Real Number): "); // Meminta input pilihan dari pengguna
         scanf("%d", &option); // Menyimpan input pilihan
         
-        if (option == 1) { // Jika pilihan adalah 1 (enkripsi)
-            do { // Loop untuk memastikan teks input tidak melebihi panjang maksimum
-                system("cls"); // Menghapus layar konsol (hanya berfungsi di sistem Windows)
-                printf("=========================     OneSecure Encrypt     =========================\n"); // Header untuk proses enkripsi
-                printf("\nInput your message (up to 16 characters): "); // Meminta input teks plainteks dari pengguna
-                scanf("%s", inputText); // Menyimpan input teks
+        switch (option)
+        {
+            case 1:
+            do {
+                system("cls");
+                printf("=========================     OneSecure Encrypt AES     =========================\n");
+                printf("\nInput your message (up to 16 characters): ");
+                scanf("%s", inputText);
+                memset(plaintext, 0, MAX_TEXT_LENGTH);
+                memcpy(plaintext, inputText, strlen(inputText));
                 
                 memset(plaintext, 0, MAX_TEXT_LENGTH); // Mengosongkan array plaintext
                 memcpy(plaintext, inputText, strlen(inputText)); // Menyalin teks input ke array plaintext
@@ -51,22 +64,28 @@ int main() { // Fungsi utama program
             sleep(2); // Jeda selama 2 detik
             printf("\nYour Message Hide Successfully\n"); // Pesan berhasil
             
-            printf("\n(VERY IMPORTANT!!!) keep it in your head\nCiphertext (HEXADECIMAL):\n"); // Pesan enkripsi berhasil
-            printHex(ciphertext, MAX_TEXT_LENGTH); // Cetak teks sandi dalam format heksadesimal
-            printf("\n\n\n"); // Baris kosong
-        } else if (option == 2) { // Jika pilihan adalah 2 (dekripsi)
-            do { // Loop untuk memastikan input ciphertext valid
-                system("cls"); // Menghapus layar konsol (hanya berfungsi di sistem Windows)
-	            printf("=========================     OneSecure Decrypt     =========================\n"); // Header untuk proses dekripsi
-	            printf("\nInput Your Ciphertext In HEXADECIMAL (separated by space): "); // Meminta input ciphertext dari pengguna
-	            for (i = 0; i < MAX_TEXT_LENGTH; i++) { // Loop untuk membaca teks sandi dalam format heksadesimal
-	                if (scanf("%2x", &ciphertext[i]) != 1) { // Membaca satu byte dari input dalam format heksadesimal
-	                    printf("\nError: Invalid input. Please enter a valid Ciphertext.\n"); // Cetak pesan kesalahan jika input tidak valid
+            printf("Hiding Your Message\nProcessing ...");
+            sleep(2);
+            printf("\nYour Message Hide Successfully\n");
+            
+            printf("\n(VERY IMPORTANT!!!) keep it in your head\nCiphertext (HEXADECIMAL):\n");
+            printHex(ciphertext, MAX_TEXT_LENGTH);
+            printf("\n\n\n");
+
+            break;
+        case 2:
+            do {
+            system("cls");
+	            printf("=========================     OneSecure Decrypt AES     =========================\n");
+	            printf("\nInput Your Ciphertext In HEXADECIMAL (separated by space): ");
+	            for (i = 0; i < MAX_TEXT_LENGTH; i++) {
+	                if (scanf("%2x", &ciphertext[i]) != 1) {
+	                    printf("\nError: Invalid input. Please enter a valid Ciphertext.\n");
 	                    while (getchar() != '\n'); // Membersihkan sisa input
 	                    break; // Keluar dari loop
 	                }
 	            }
-			} while (i < MAX_TEXT_LENGTH); // Loop akan berlanjut sampai teks sandi valid
+			} while (i < MAX_TEXT_LENGTH);
             
             aes_decrypt(ciphertext, decryptedtext, key, size); // Melakukan dekripsi teks
                 
@@ -75,17 +94,55 @@ int main() { // Fungsi utama program
             printf("\nDecrypted text (HEXADECIMAL):\n"); // Cetak hasil dekripsi dalam format heksadesimal
             printHex(decryptedtext, MAX_TEXT_LENGTH); // Cetak teks terdekripsi dalam format heksadesimal
             
-            printf("\nDecrypted text (ASCII):\n"); // Cetak hasil dekripsi dalam format ASCII
-            printASCII(decryptedtext, MAX_TEXT_LENGTH); // Cetak teks terdekripsi dalam format ASCII
-            printf("\n\n\n"); // Baris kosong
-        } else if (option == 0) { // Jika pilihan adalah 0 (keluar)
-            printf("\nExiting...\n"); // Cetak pesan keluar
-            sleep(2); // Jeda selama 2 detik
-        } else { // Jika pilihan tidak valid
-            printf("\nInvalid option. Please try again.\n"); // Cetak pesan kesalahan
+            printf("Decrypt your message\n Processing...\n");
+            sleep(2);
+            printf("\nDecrypted text (HEXADECIMAL):\n");
+            printHex(decryptedtext, MAX_TEXT_LENGTH);
+            
+            printf("\nDecrypted text (ASCII):\n");
+            printASCII(decryptedtext, MAX_TEXT_LENGTH);
+            printf("\n\n\n");
+            break;
+        case 3:
+            system("cls");
+            printf("=========================     OneSecure Encrypt PVD     =========================\n");
+            // printf("1. Encrypt JPG file\n");
+            // printf("2. Encrypt PNG file\n");
+            // printf("Enter choice: ");
+            // scanf("%d", &extention);
+            printf("Enter your secret message: ");
+            scanf(" %[^\n]", secret_message);
+            printf("Enter your image name: ");
+            scanf(" %s", cover_image);
+            printf("Enter your output image name: ");
+            scanf(" %s", stego_image);
+            embed_process(cover_image, secret_message, stego_image);
+            break;
+        case 4:
+            system("cls");
+            printf("=========================     OneSecure Decrypt PVD     =========================\n");
+            printf("Enter your image name: ");
+            scanf(" %s", stego_image);
+            extractMessage(stego_image);
+            break;
+        case 0:
+            printf("\nExiting...\n");
+            sleep(2);
+            exit(0);
+            break;
+        default:
+            printf("\n invalid option. Please try again.\n");
         }
-    } while (option != 0); // Loop akan berlanjut sampai pilihan adalah 0 (keluar)
+
+        printf("Back to menu? (Y/N) \n");
+        scanf(" %c", &menu);
+
+        if (menu != 'Y' && menu != 'y') {
+            break;
+        }
     
-    return 0; // Keluar dari program dengan status berhasil
+    }
+    return 0;
+
 }
 
