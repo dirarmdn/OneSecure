@@ -12,7 +12,7 @@
 
 int main() {
 
-    int option, i, choice;
+    int option, i, choice, format;
     char inputText[MAX_TEXT_LENGTH];
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
@@ -25,7 +25,7 @@ int main() {
     char menu;
     
     for (;;) {
-        // system("cls");
+        system("cls");
         printf("||=================================================||\n");
         printf("||                WELCOME TO OneSecure             ||\n");
         printf("||=================================================||\n");
@@ -94,17 +94,17 @@ int main() {
         case 3:
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
-            // printf("1. Encrypt JPG file\n");
-            // printf("2. Encrypt PNG file\n");
-            // printf("Enter choice: ");
-            // scanf("%d", &extention);
+            printf("1. Encrypt JPG file\n");
+            printf("2. Encrypt PNG file\n");
+            printf("Enter choice: ");
+            scanf("%d", &format);
             printf("Enter your secret message: ");
             scanf(" %[^\n]", secret_message);
             printf("Enter your image name: ");
             scanf(" %s", cover_image);
             printf("Enter your output image name: ");
             scanf(" %s", stego_image);
-            embed_process(cover_image, secret_message, stego_image);
+            embed_process(cover_image, secret_message, stego_image, format);
             break;
         case 4:
             system("cls");
