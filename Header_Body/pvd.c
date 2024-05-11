@@ -30,12 +30,16 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
         insertNode(&head, secretMessage[i]);
     }
 
-	insertRandNumber(&head);
+	insertRandChar(&head);
     size = countList(head);
 	unsigned char input[size];
 	linkedListToArray(head, input);
+    printf("\nhasil akhir bgt ceritanya:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%c", input[i]); // Mencetak isi array
+    }
 
-    embedMessage(coverImage, secretMessage, stegoImage, format);
+    embedMessage(coverImage, input, stegoImage, format);
 }
 
 void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage, int format) {
@@ -68,12 +72,12 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
     for (int i = 4; i < width * height * channels; i++) {
         // Pastikan masih ada pesan yang akan disisipkan
         if (secretMessageIndex < secretMessageLength) {
-            int lsb = image[i] & 1;
+            int bit_img = image[i] & 1;
             int secretBit = (secretMessage[secretMessageIndex / 8] >> (7 - (secretMessageIndex % 8))) & 1;
 
             // Sesuaikan nilai piksel sesuai dengan bit pesan
-            if (lsb != secretBit) {
-                if (lsb == 0) {
+            if (bit_img != secretBit) {
+                if (bit_img == 0) {
                     if (image[i] < 255) { // Naikkan nilai piksel jika masih memungkinkan
                         image[i]++;
                     }

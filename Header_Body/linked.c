@@ -44,35 +44,37 @@ void insertNode(address *head, infotype data) {
     }
 }
 
-void insertRandNumber(address *head) {
+void insertRandChar(address *head) {
     address pCur, pNew;
-    int code;
-    char strCode[4];
+    char randChar;
 
     srand(time(0));
     pCur = *head;
     do {
-        code = rand() % 100;
-        sprintf(strCode, "%d", code); // Mengonversi bilangan integer menjadi string
-        // printf("codenya bimlek: %s\n", strCode[1]);
-        
-        for (int i = 0; i <= 2; i++) {
-            pNew = createNode();
-            fillNode(pNew, strCode[i]);
-            next(pNew) = next(pCur);
-            prev(next(pNew)) = pNew;
-            next(pCur) = pNew;
-            prev(pNew) = pCur;
-            pCur = next(pNew);
-        }
+        // Menghasilkan karakter acak antara 'a' dan 'z'
+        randChar = 'a' + rand() % 26;
+
+        // Membuat node baru dan mengisinya dengan karakter acak
+        pNew = createNode();
+        fillNode(pNew, randChar);
+
+        // Menyisipkan node baru ke dalam linked list
+        next(pNew) = next(pCur);
+        prev(next(pNew)) = pNew;
+        next(pCur) = pNew;
+        prev(pNew) = pCur;
+
+        pCur = next(pNew);
     } while (pCur != *head);
 
+    // Mencetak isi linked list yang baru disisipi karakter acak
     pCur = *head;
     do {
-        printf("%c", data(pCur)); // Mencetak karakter dari array
-        pCur = next(pCur); // Memindahkan pCur ke node berikutnya
+        printf("%c", data(pCur));
+        pCur = next(pCur);
     } while (pCur != *head);
 }
+
 
 int countList(address head) {
     address pCur = head;

@@ -1,10 +1,12 @@
 {
   "files.associations": {
+    "*.c": "c",
     "*.css": "css",
     "stdio.h": "c",
     "aes.h": "c",
     "stdlib.h": "c",
-    "string.h": "c"
+    "string.h": "c",
+    "stb_image.h": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

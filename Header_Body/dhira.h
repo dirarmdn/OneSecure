@@ -28,9 +28,9 @@ address createNode ();
 // Param(s) : p (parameter Input-Output); data (parameter Input)
 void fillNode (address p, infotype data);
 
-// Tujuan : Mengisi linked list dengan random number
+// Tujuan : Mengisi linked list dengan random character
 // Param : p (parameter Input-Output)
-void insertRandNumber (address *p);
+void insertRandChar (address *p);
 
 // Tujuan : Menghubungkan node menjadi sebuah linked list
 // Param(s) : head (parameter Input-Output), data (parameter input)
