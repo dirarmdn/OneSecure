@@ -25,7 +25,7 @@ int main() {
     char menu;
     
     for (;;) {
-        system("cls");
+        // system("cls");
         printf("||=================================================||\n");
         printf("||                WELCOME TO OneSecure             ||\n");
         printf("||=================================================||\n");

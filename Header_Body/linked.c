@@ -7,7 +7,7 @@
 address createNode () {
 	address pNew;
 
-	pNew = (address)malloc(sizeof(linkedList)); // alokasi dinamis
+	pNew = (address) malloc(sizeof(linkedList)); // alokasi dinamis
 	if (pNew == NULL) {
 		printf("Gagal Alokasi\n");
 		return NULL;
@@ -15,13 +15,8 @@ address createNode () {
 	return pNew;
 }
 
-void fillNode(address *p, infotype data) {
-    if (p == NULL) {
-        printf("Node Belum dialokasi\n");
-    } else {
-        data(*p) = data;
-        next(*p) = NULL;
-    }   
+void fillNode(address p, infotype data) {
+    data(p) = data;
 }
 
 void insertNode(address *head, infotype data) {
@@ -29,61 +24,95 @@ void insertNode(address *head, infotype data) {
     
     pNew = createNode();
     if (pNew != NULL) {
-        fillNode(&pNew, data);
+        fillNode(pNew, data);
 
-        if (*head == NULL) {
+        if (*head == NULL) {  //jika linked list kosong
             *head = pNew;
+            prev(pNew) = pNew;
+            next(pNew) = pNew;
         } else {
             pCur = *head;
-            while (next(pCur) != NULL) {
+            while (next(pCur) != *head) {
                 pCur = next(pCur);
             }
+
             next(pCur) = pNew;
-        }   
+            prev(pNew) = pCur;
+            next(pNew) = *head;
+            prev(*head) = pNew;
+        }
     }
 }
 
-
 void insertRandNumber(address *head) {
-    address pCur, pCode;
+    address pCur, pNew;
     int code;
-    char strCode[100];
+    char strCode[4];
 
-	srand(time(0));
+    srand(time(0));
     pCur = *head;
-    while (next(pCur) != NULL) {
-        code = rand() % 1000;
+    do {
+        code = rand() % 100;
         sprintf(strCode, "%d", code); // Mengonversi bilangan integer menjadi string
+        // printf("codenya bimlek: %s\n", strCode[1]);
         
-		pCode = createNode();
-        fillNode(&pCode, strCode[0]); // Memasukkan karakter pertama dari string sebagai data node
-        
-		next(pCode) = next(pCur);
-        next(pCur) = pCode;
-        pCur = next(pCode);
-    }
+        for (int i = 0; i <= 2; i++) {
+            pNew = createNode();
+            fillNode(pNew, strCode[i]);
+            next(pNew) = next(pCur);
+            prev(next(pNew)) = pNew;
+            next(pCur) = pNew;
+            prev(pNew) = pCur;
+            pCur = next(pNew);
+        }
+    } while (pCur != *head);
+
+    pCur = *head;
+    do {
+        printf("%c", data(pCur)); // Mencetak karakter dari array
+        pCur = next(pCur); // Memindahkan pCur ke node berikutnya
+    } while (pCur != *head);
 }
 
 int countList(address head) {
     address pCur = head;
-	int count;
+    int count = 0;
 
-	count = 0;
-    while (pCur != NULL) {
+    do {
         pCur = next(pCur);
-		count++;
-    }
+        count++;
+    } while (pCur != head);
+    
     return count;
 }
 
 void linkedListToArray(address head, unsigned char* array) {
     address pCur = head;
     int i = 0;
-    while (pCur != NULL) {
-        array[i] = data(pCur);
-		printf("%c", data(pCur));
-        pCur = next(pCur);
-        i++;
-    }
-	printf("\n");
+    do {
+        array[i] = data(pCur); // Menyalin data ke dalam array
+        pCur = next(pCur); // Memindahkan pCur ke node berikutnya
+        i++; // Menambahkan indeks array
+    } while (pCur != head);
 }
+
+
+// int main() {
+//     int i, size;
+//     address head = NULL;
+//     const char* secretMessage = "halo say";
+
+//     for (i = 0; i < strlen(secretMessage); i++) {
+//         insertNode(&head, secretMessage[i]);
+//     }
+
+// 	insertRandNumber(&head);
+//     size = countList(head);
+//     unsigned char input[size];
+//     linkedListToArray(head, input);
+//     printf("\nhasil akhir bgt ceritanya:\n");
+//     for (int i = 0; i < size; i++) {
+//         printf("%c", input[i]); // Mencetak isi array
+//     }
+
+// }

@@ -8,12 +8,14 @@
 
 #define data(P) (P)->data
 #define next(P) (P)->next
+#define prev(P) (P)->prev
 
 typedef char infotype;
 typedef struct TLinked *address;
 typedef struct TLinked {
     infotype data;
     address next;
+    address prev;
 } linkedList;
 
 // Tujuan : memesan memory dengan alokasi dinamis
@@ -24,7 +26,7 @@ address createNode ();
 // Periksa keberadaan P, Nilai diisi jika p tidak NULL
 // next(*p) diisi NULL
 // Param(s) : p (parameter Input-Output); data (parameter Input)
-void fillNode (address *p, infotype data);
+void fillNode (address p, infotype data);
 
 // Tujuan : Mengisi linked list dengan random number
 // Param : p (parameter Input-Output)
@@ -66,8 +68,5 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
 // Tujuan : untuk menyatukan proses penyisipan pesan mulai dari pemrosesan
 // pesan rahasia sampai embedding to image
 void embed_process (const char* coverImage, const char* secretMessage, const char* stegoImage, int format);
-
-
-void saveIMG(const char* filename, unsigned char* data, int width, int height, int extention);
 
 #endif
