@@ -208,11 +208,91 @@ void shiftRow(unsigned char *state, unsigned char nbr)
     }
 }
 
+<<<<<<< Updated upstream:aes.c
 void addRoundKey(unsigned char *state, unsigned char *roundKey)
 {
     int i;
     for (i = 0; i < 16; i++)
         state[i] = state[i] ^ roundKey[i];
+=======
+DoublyCircularLinkedList* createDoublyCircularLinkedList() {
+    DoublyCircularLinkedList *list = (DoublyCircularLinkedList*)malloc(sizeof(DoublyCircularLinkedList));
+    if (list == NULL) {
+        // Handle memory allocation error
+        exit(1);
+    }
+    list->head = NULL;
+    return list;
+}
+
+// Function to insert a new node at the end of the doubly circular linked list
+void insertEnd(DoublyCircularLinkedList *list, unsigned char data) {
+    Node *newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        // Handle memory allocation error
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (list->head == NULL) {
+        // If the list is empty, set the new node as the head
+        list->head = newNode;
+        newNode->next = newNode;
+        newNode->prev = newNode;
+    } else {
+        // Traverse to the last node and insert the new node after it
+        Node *lastNode = list->head->prev;
+        lastNode->next = newNode;
+        newNode->prev = lastNode;
+        newNode->next = list->head;
+        list->head->prev = newNode;
+    }
+}
+
+// Function to convert an array to a doubly circular linked list
+DoublyCircularLinkedList* arrayToDoublyCircularLinkedList(unsigned char *array, int length) {
+    DoublyCircularLinkedList *list = createDoublyCircularLinkedList();
+
+    // Insert each element of the array into the linked list
+    for (int i = 0; i < length; i++) {
+        insertEnd(list, array[i]);
+    }
+
+    return list;
+}
+
+// void addRoundKey(unsigned char *state, unsigned char *roundKey)
+// {
+//     int i;
+//     for (i = 0; i < 16; i++)
+//         state[i] = state[i] ^ roundKey[i];
+// }
+
+void addRoundKey(DoublyCircularLinkedList *state, DoublyCircularLinkedList *roundKey) {
+    Node *currentStateNode = state->head;
+    Node *currentKeyNode = roundKey->head;
+
+    // Loop through the state and XOR each byte with the corresponding byte in the round key
+    while (currentStateNode != NULL && currentKeyNode != NULL) {
+        currentStateNode->data ^= currentKeyNode->data;
+        currentStateNode = currentStateNode->next;
+        currentKeyNode = currentKeyNode->next;
+    }
+}
+
+// Function to convert a doubly circular linked list to an array
+void doublyCircularLinkedListToArray(DoublyCircularLinkedList *list, unsigned char *array) {
+    Node *currentNode = list->head;
+    int i = 0;
+
+    // Traverse the linked list and copy each element to the array
+    do {
+        array[i++] = currentNode->data;
+        currentNode = currentNode->next;
+    } while (currentNode != list->head);
+>>>>>>> Stashed changes:Header_Body/aes.c
 }
 
 unsigned char galois_multiplication(unsigned char a, unsigned char b)
@@ -287,12 +367,8 @@ void mixColumn(unsigned char *column)
                 galois_multiplication(cpy[0], 3);
 }
 
-void aes_round(unsigned char *state, unsigned char *roundKey)
-{
-    subBytes(state);
-    shiftRows(state);
-    mixColumns(state);
-    addRoundKey(state, roundKey);
+void aes_round(DoublyCircularLinkedList *state, DoublyCircularLinkedList *roundKey) {
+    addRoundKey(state, roundKey); // Add round key to state
 }
 
 void createRoundKey(unsigned char *expandedKey, unsigned char *roundKey)
@@ -311,21 +387,21 @@ void aes_main(unsigned char *state, unsigned char *expandedKey, int nbrRounds)
 {
     int i = 0;
 
-    unsigned char roundKey[16];
+    DoublyCircularLinkedList *roundKey = createDoublyCircularLinkedList(); // Create a linked list for the round key
 
-    createRoundKey(expandedKey, roundKey);
-    addRoundKey(state, roundKey);
+    createRoundKey(expandedKey, roundKey); // Convert expanded key to round key linked list
+    aes_round(state, roundKey); // Add round key to state
 
     for (i = 1; i < nbrRounds; i++)
     {
-        createRoundKey(expandedKey + 16 * i, roundKey);
-        aes_round(state, roundKey);
+        createRoundKey(expandedKey + 16 * i, roundKey); // Convert next round key to linked list
+        aes_round(state, roundKey); // Perform AES round operation
     }
 
-    createRoundKey(expandedKey + 16 * nbrRounds, roundKey);
+    createRoundKey(expandedKey + 16 * nbrRounds, roundKey); // Convert last round key to linked list
     subBytes(state);
     shiftRows(state);
-    addRoundKey(state, roundKey);
+    aes_round(state, roundKey); // Add final round key to state
 }
 
 char aes_encrypt(unsigned char *input,
