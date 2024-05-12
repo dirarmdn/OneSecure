@@ -8,17 +8,17 @@
 #include "dhira.h"
 #include "syahid.h"
 
-#define MAX_TEXT_LENGTH 16
+#define MAX_TEXT_LENGTH 24
 
 int main() {
 
-    int option, i, choice, format;
+    int option, i, choice;
     char inputText[MAX_TEXT_LENGTH];
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
     unsigned char decryptedtext[MAX_TEXT_LENGTH];
-    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
-    enum keySize size = SIZE_16;
+    unsigned char key[24] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4'};
+    enum keySize size = SIZE_24;
     char cover_image[100], stego_image[100], secret_message[100];
     const char* secretMessage;
 	const char* coverImage;
@@ -46,7 +46,7 @@ int main() {
                 system("cls");
                 printf("=========================     OneSecure Encrypt AES     =========================\n");
                 printf("\nInput your message (up to 16 characters): ");
-                scanf("%s", inputText);
+                scanf(" %[^\n]s", &inputText);
                 memset(plaintext, 0, MAX_TEXT_LENGTH);
                 memcpy(plaintext, inputText, strlen(inputText));
                 
@@ -88,23 +88,23 @@ int main() {
             printHex(decryptedtext, MAX_TEXT_LENGTH);
             
             printf("\nDecrypted text (ASCII):\n");
-            printASCII(decryptedtext, MAX_TEXT_LENGTH);
+            printASCII(decryptedtext, strlen(inputText));
             printf("\n\n\n");
             break;
         case 3:
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
-            printf("1. Encrypt JPG file\n");
-            printf("2. Encrypt PNG file\n");
-            printf("Enter choice: ");
-            scanf("%d", &format);
+            // printf("1. Encrypt JPG file\n");
+            // printf("2. Encrypt PNG file\n");
+            // printf("Enter choice: ");
+            // scanf("%d", &extention);
             printf("Enter your secret message: ");
             scanf(" %[^\n]", secret_message);
             printf("Enter your image name: ");
             scanf(" %s", cover_image);
             printf("Enter your output image name: ");
             scanf(" %s", stego_image);
-            embed_process(cover_image, secret_message, stego_image, format);
+            // embed_process(cover_image, secret_message, stego_image);
             break;
         case 4:
             system("cls");
@@ -133,4 +133,3 @@ int main() {
     return 0;
 
 }
-

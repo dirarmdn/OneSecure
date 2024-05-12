@@ -1,8 +1,6 @@
 #include <stdio.h>  // for printf
 #include <stdlib.h> // for malloc, free
 #include "raihan.h"
-#include "dwika.h"
-#include "alya.h"
 
 enum errorCode
 {
@@ -128,7 +126,10 @@ void core(unsigned char *word, int iteration)
  * key is a pointer to a non-expanded key
  */
 
-void expandKey(unsigned char *expandedKey, unsigned char *key, enum keySize size,size_t expandedKeySize)
+void expandKey(unsigned char *expandedKey,
+               unsigned char *key,
+               enum keySize size,
+               size_t expandedKeySize)
 {
     // current expanded keySize, in bytes
     int currentSize = 0;
@@ -178,41 +179,119 @@ void expandKey(unsigned char *expandedKey, unsigned char *key, enum keySize size
 void subBytes(unsigned char *state)
 {
     int i;
-    // Looping untuk mengganti setiap byte dalam state dengan nilai dari SBox
-    // menggunakan nilai byte dalam state sebagai indeks untuk SBox
+    /* substitute all the values from the state with the value in the SBox
+     * using the state value as index for the SBox
+     */
     for (i = 0; i < 16; i++)
-        state[i] = getSBoxValue(state[i]); // Mengganti byte dengan nilai dari SBox
+        state[i] = getSBoxValue(state[i]);
 }
 
 void shiftRows(unsigned char *state)
 {
     int i;
-    // Iterasi melalui 4 baris dan memanggil fungsi shiftRow() untuk setiap baris
+    // iterate over the 4 rows and call shiftRow() with that row
     for (i = 0; i < 4; i++)
-        shiftRow(state + i * 4, i); // Memanggil shiftRow() dengan baris state yang sesuai
+        shiftRow(state + i * 4, i);
 }
 
 void shiftRow(unsigned char *state, unsigned char nbr)
 {
     int i, j;
     unsigned char tmp;
-    // Setiap iterasi menggeser baris ke kiri sebanyak nbr kali
+    // each iteration shifts the row to the left by 1
     for (i = 0; i < nbr; i++)
     {
-        tmp = state[0]; // Menyimpan nilai byte pertama dalam baris
-        // Menggeser setiap byte dalam baris ke kiri sebanyak 1 byte
+        tmp = state[0];
         for (j = 0; j < 3; j++)
             state[j] = state[j + 1];
-        state[3] = tmp; // Memasukkan nilai yang disimpan ke byte terakhir
+        state[3] = tmp;
     }
 }
 
+// void addRoundKey(unsigned char *state, unsigned char *roundKey)
+// {
+//     int i;
+//     for (i = 0; i < 16; i++)
+//         state[i] = state[i] ^ roundKey[i];
+// }
 
-void addRoundKey(unsigned char *state, unsigned char *roundKey)
-{
-    int i;
-    for (i = 0; i < 16; i++)
-        state[i] = state[i] ^ roundKey[i];
+DoublyCircularLinkedList* createDoublyCircularLinkedList() {
+    DoublyCircularLinkedList *list = (DoublyCircularLinkedList*)malloc(sizeof(DoublyCircularLinkedList));
+    if (list == NULL) {
+        // Handle memory allocation error
+        exit(1);
+    }
+    list->head = NULL;
+    return list;
+}
+
+// Function to insert a new node at the end of the doubly circular linked list
+void insertEnd(DoublyCircularLinkedList *list, unsigned char data) {
+    Node *newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        // Handle memory allocation error
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (list->head == NULL) {
+        // If the list is empty, set the new node as the head
+        list->head = newNode;
+        newNode->next = newNode;
+        newNode->prev = newNode;
+    } else {
+        // Traverse to the last node and insert the new node after it
+        Node *lastNode = list->head->prev;
+        lastNode->next = newNode;
+        newNode->prev = lastNode;
+        newNode->next = list->head;
+        list->head->prev = newNode;
+    }
+}
+
+// Function to convert an array to a doubly circular linked list
+DoublyCircularLinkedList* arrayToDoublyCircularLinkedList(unsigned char *array, int length) {
+    DoublyCircularLinkedList *list = createDoublyCircularLinkedList();
+
+    // Insert each element of the array into the linked list
+    for (int i = 0; i < length; i++) {
+        insertEnd(list, array[i]);
+    }
+
+    return list;
+}
+
+// void addRoundKey(unsigned char *state, unsigned char *roundKey)
+// {
+//     int i;
+//     for (i = 0; i < 16; i++)
+//         state[i] = state[i] ^ roundKey[i];
+// }
+
+void addRoundKey(DoublyCircularLinkedList *state, DoublyCircularLinkedList *roundKey) {
+    Node *currentStateNode = state->head;
+    Node *currentKeyNode = roundKey->head;
+
+    // Loop through the state and XOR each byte with the corresponding byte in the round key
+    while (currentStateNode != NULL && currentKeyNode != NULL) {
+        currentStateNode->data ^= currentKeyNode->data;
+        currentStateNode = currentStateNode->next;
+        currentKeyNode = currentKeyNode->next;
+    }
+}
+
+// Function to convert a doubly circular linked list to an array
+void doublyCircularLinkedListToArray(DoublyCircularLinkedList *list, unsigned char *array) {
+    Node *currentNode = list->head;
+    int i = 0;
+
+    // Traverse the linked list and copy each element to the array
+    do {
+        array[i++] = currentNode->data;
+        currentNode = currentNode->next;
+    } while (currentNode != list->head);
 }
 
 unsigned char galois_multiplication(unsigned char a, unsigned char b)
@@ -287,12 +366,8 @@ void mixColumn(unsigned char *column)
                 galois_multiplication(cpy[0], 3);
 }
 
-void aes_round(unsigned char *state, unsigned char *roundKey)
-{
-    subBytes(state);
-    shiftRows(state);
-    mixColumns(state);
-    addRoundKey(state, roundKey);
+void aes_round(DoublyCircularLinkedList *state, DoublyCircularLinkedList *roundKey) {
+    addRoundKey(state, roundKey); // Add round key to state
 }
 
 void createRoundKey(unsigned char *expandedKey, unsigned char *roundKey)
@@ -311,102 +386,136 @@ void aes_main(unsigned char *state, unsigned char *expandedKey, int nbrRounds)
 {
     int i = 0;
 
-    unsigned char roundKey[16];
+    DoublyCircularLinkedList *roundKey = createDoublyCircularLinkedList(); // Create a linked list for the round key
 
-    createRoundKey(expandedKey, roundKey);
-    addRoundKey(state, roundKey);
+    createRoundKey(expandedKey, roundKey); // Convert expanded key to round key linked list
+    aes_round(state, roundKey); // Add round key to state
 
     for (i = 1; i < nbrRounds; i++)
     {
-        createRoundKey(expandedKey + 16 * i, roundKey);
-        aes_round(state, roundKey);
+        createRoundKey(expandedKey + 16 * i, roundKey); // Convert next round key to linked list
+        aes_round(state, roundKey); // Perform AES round operation
     }
 
-    createRoundKey(expandedKey + 16 * nbrRounds, roundKey);
+    createRoundKey(expandedKey + 16 * nbrRounds, roundKey); // Convert last round key to linked list
     subBytes(state);
     shiftRows(state);
-    addRoundKey(state, roundKey);
+    aes_round(state, roundKey); // Add final round key to state
 }
 
-char aes_encrypt(unsigned char *input, unsigned char *output, unsigned char *key, enum keySize size) {
+char aes_encrypt(unsigned char *input,
+                 unsigned char *output,
+                 unsigned char *key,
+                 enum keySize size)
+{
+    // the expanded keySize
     int expandedKeySize;
+
+    // the number of rounds
     int nbrRounds;
-    int i;
+
+    // the expanded key
     unsigned char *expandedKey;
+
+    // the 128 bit block to encode
     unsigned char block[16];
 
-    // Menentukan jumlah putaran dan ukuran kunci yang diperluas berdasarkan ukuran kunci yang diberikan
-    switch (size) {
-        case SIZE_16:
-            nbrRounds = 10; // Jumlah putaran untuk kunci 16 byte
-            expandedKeySize = 176; // Ukuran kunci yang diperluas untuk kunci 16 byte
-            break;
-        case SIZE_24:
-            nbrRounds = 12; // Jumlah putaran untuk kunci 24 byte
-            expandedKeySize = 208; // Ukuran kunci yang diperluas untuk kunci 24 byte
-            break;
-        case SIZE_32:
-            nbrRounds = 14; // Jumlah putaran untuk kunci 32 byte
-            expandedKeySize = 240; // Ukuran kunci yang diperluas untuk kunci 32 byte
-            break;
-        default:
-            return ERROR_AES_UNKNOWN_KEYSIZE; // Mengembalikan kesalahan jika ukuran kunci tidak diketahui
+    int i, j;
+
+    // set the number of rounds
+    switch (size)
+    {
+    case SIZE_16:
+        nbrRounds = 10;
+        break;
+    case SIZE_24:
+        nbrRounds = 12;
+        break;
+    case SIZE_32:
+        nbrRounds = 14;
+        break;
+    default:
+        return ERROR_AES_UNKNOWN_KEYSIZE;
+        break;
     }
 
-    // Mengalokasikan memori untuk kunci yang diperluas
+    expandedKeySize = (16 * (nbrRounds + 1));
+
     expandedKey = (unsigned char *)malloc(expandedKeySize * sizeof(unsigned char));
-    if (expandedKey == NULL) {
-        return ERROR_MEMORY_ALLOCATION_FAILED; // Mengembalikan kesalahan jika alokasi memori gagal
+
+    if (expandedKey == NULL)
+    {
+        return ERROR_MEMORY_ALLOCATION_FAILED;
+    }
+    else
+    {
+        /* Set the block values, for the block:
+         * a0,0 a0,1 a0,2 a0,3
+         * a1,0 a1,1 a1,2 a1,3
+         * a2,0 a2,1 a2,2 a2,3
+         * a3,0 a3,1 a3,2 a3,3
+         * the mapping order is a0,0 a1,0 a2,0 a3,0 a0,1 a1,1 ... a2,3 a3,3
+         */
+
+        // iterate over the columns
+        for (i = 0; i < 4; i++)
+        {
+            // iterate over the rows
+            for (j = 0; j < 4; j++)
+                block[(i + (j * 4))] = input[(i * 4) + j];
+        }
+
+        // expand the key into an 176, 208, 240 bytes key
+        expandKey(expandedKey, key, size, expandedKeySize);
+
+        // encrypt the block using the expandedKey
+        aes_main(block, expandedKey, nbrRounds);
+
+        // unmap the block again into the output
+        for (i = 0; i < 4; i++)
+        {
+            // iterate over the rows
+            for (j = 0; j < 4; j++)
+                output[(i * 4) + j] = block[(i + (j * 4))];
+        }
+
+        // de-allocate memory for expandedKey
+        free(expandedKey);
+        expandedKey = NULL;
     }
 
-    // Menetapkan nilai-nilai blok menggunakan nilai-nilai dari input plaintext
-    for (i = 0; i < 16; i++) {
-        block[i] = input[i];
-    }
-
-    expandKey(expandedKey, key, size, expandedKeySize); // Memperluas kunci
-    aes_main(block, expandedKey, nbrRounds); // Melakukan enkripsi blok menggunakan kunci yang diperluas
-
-    // Memasukkan blok yang telah dienkripsi ke dalam output
-    for (i = 0; i < 16; i++) {
-        output[i] = block[i];
-    }
-
-    free(expandedKey); // Membebaskan memori yang dialokasikan untuk kunci yang diperluas
-    expandedKey = NULL;
-
-    return SUCCESS; // Mengembalikan nilai sukses
+    return SUCCESS;
 }
 
 void invSubBytes(unsigned char *state)
 {
     int i;
-    // Looping untuk mengganti setiap byte dalam state dengan nilai dari SBoxInvert
-    // menggunakan nilai byte dalam state sebagai indeks untuk SBoxInvert
+    /* substitute all the values from the state with the value in the SBox
+     * using the state value as index for the SBox
+     */
     for (i = 0; i < 16; i++)
-        state[i] = getSBoxInvert(state[i]); // Mengganti byte dengan nilai dari SBoxInvert
+        state[i] = getSBoxInvert(state[i]);
 }
 
 void invShiftRows(unsigned char *state)
 {
     int i;
-    // Iterasi melalui 4 baris dan memanggil fungsi invShiftRow() untuk setiap baris
+    // iterate over the 4 rows and call invShiftRow() with that row
     for (i = 0; i < 4; i++)
-        invShiftRow(state + i * 4, i); // Memanggil invShiftRow() dengan baris state yang sesuai
+        invShiftRow(state + i * 4, i);
 }
 
 void invShiftRow(unsigned char *state, unsigned char nbr)
 {
     int i, j;
     unsigned char tmp;
-    // Setiap iterasi menggeser baris ke kanan sebanyak nbr kali
+    // each iteration shifts the row to the right by 1
     for (i = 0; i < nbr; i++)
     {
-        tmp = state[3]; // Menyimpan nilai byte terakhir dalam baris
-        // Menggeser setiap byte dalam baris ke kanan sebanyak 1 byte
+        tmp = state[3];
         for (j = 3; j > 0; j--)
             state[j] = state[j - 1];
-        state[0] = tmp; // Memasukkan nilai yang disimpan ke byte pertama
+        state[0] = tmp;
     }
 }
 
@@ -491,75 +600,86 @@ void aes_invMain(unsigned char *state, unsigned char *expandedKey, int nbrRounds
     addRoundKey(state, roundKey);
 }
 
-char aes_decrypt(unsigned char *input, unsigned char *output, unsigned char *key, enum keySize size) {
+char aes_decrypt(unsigned char *input,
+                 unsigned char *output,
+                 unsigned char *key,
+                 enum keySize size)
+{
+    // the expanded keySize
     int expandedKeySize;
+
+    // the number of rounds
     int nbrRounds;
+
+    // the expanded key
     unsigned char *expandedKey;
+
+    // the 128 bit block to decode
     unsigned char block[16];
 
-    // Menentukan jumlah putaran dan ukuran kunci yang diperluas berdasarkan ukuran kunci yang diberikan
-    switch (size) {
-        case SIZE_16:
-            nbrRounds = 10; // Jumlah putaran untuk kunci 16 byte
-            expandedKeySize = 176; // Ukuran kunci yang diperluas untuk kunci 16 byte
-            break;
-        case SIZE_24:
-            nbrRounds = 12; // Jumlah putaran untuk kunci 24 byte
-            expandedKeySize = 208; // Ukuran kunci yang diperluas untuk kunci 24 byte
-            break;
-        case SIZE_32:
-            nbrRounds = 14; // Jumlah putaran untuk kunci 32 byte
-            expandedKeySize = 240; // Ukuran kunci yang diperluas untuk kunci 32 byte
-            break;
-        default:
-            return ERROR_AES_UNKNOWN_KEYSIZE; // Mengembalikan kesalahan jika ukuran kunci tidak diketahui
+    int i, j;
+
+    // set the number of rounds
+    switch (size)
+    {
+    case SIZE_16:
+        nbrRounds = 10;
+        break;
+    case SIZE_24:
+        nbrRounds = 12;
+        break;
+    case SIZE_32:
+        nbrRounds = 14;
+        break;
+    default:
+        return ERROR_AES_UNKNOWN_KEYSIZE;
+        break;
     }
 
-    // Mengalokasikan memori untuk kunci yang diperluas
+    expandedKeySize = (16 * (nbrRounds + 1));
+
     expandedKey = (unsigned char *)malloc(expandedKeySize * sizeof(unsigned char));
-    if (expandedKey == NULL) {
-        return ERROR_MEMORY_ALLOCATION_FAILED; // Mengembalikan kesalahan jika alokasi memori gagal
+
+    if (expandedKey == NULL)
+    {
+        return ERROR_MEMORY_ALLOCATION_FAILED;
     }
+    else
+    {
+        /* Set the block values, for the block:
+         * a0,0 a0,1 a0,2 a0,3
+         * a1,0 a1,1 a1,2 a1,3
+         * a2,0 a2,1 a2,2 a2,3
+         * a3,0 a3,1 a3,2 a3,3
+         * the mapping order is a0,0 a1,0 a2,0 a3,0 a0,1 a1,1 ... a2,3 a3,3
+         */
 
-    // Menetapkan nilai-nilai blok menggunakan nilai-nilai dari input ciphertext
-    for (int i = 0; i < 16; i++) {
-        block[i] = input[i];
-    }
-
-    expandKey(expandedKey, key, size, expandedKeySize); // Memperluas kunci
- 
-    aes_invMain(block, expandedKey, nbrRounds); // Melakukan dekripsi blok menggunakan kunci yang diperluas
-
-    // Memasukkan blok yang telah didekripsi ke dalam output
-    for (int i = 0; i < 16; i++) {
-        output[i] = block[i];
-    }
-
-    free(expandedKey); // Membebaskan memori yang dialokasikan untuk kunci yang diperluas
-    expandedKey = NULL;
-
-    return SUCCESS; // Mengembalikan nilai sukses
-}
-
-
-void printHex(unsigned char *text, int length) {
-    // Melakukan iterasi melalui setiap byte dalam array text
-    for (int i = 0; i < length; i++) {
-        printf("%2.2x ", text[i]); // Mencetak setiap byte dalam format heksadesimal dua digit  di antara setiap byte
-    }
-    printf("\n");
-}
-
-void printASCII(unsigned char *text, int length) {
-    // Melakukan iterasi melalui setiap byte dalam array text
-    for (int i = 0; i < length; i++) {
-        // Memeriksa apakah byte saat ini adalah karakter cetak standar dalam ASCII (dari 0x20 hingga 0x7e)
-        if (text[i] >= 0x20 && text[i] <= 0x7e) {
-            printf("%c", text[i]); // mencetak karakter ASCII setelah di cek
-        } else {
-            printf(" "); // mencetak spasi untuk karakter tidak tercetak
+        // iterate over the columns
+        for (i = 0; i < 4; i++)
+        {
+            // iterate over the rows
+            for (j = 0; j < 4; j++)
+                block[(i + (j * 4))] = input[(i * 4) + j];
         }
-    }
-    printf("\n");
-}
 
+        // expand the key into an 176, 208, 240 bytes key
+        expandKey(expandedKey, key, size, expandedKeySize);
+
+        // decrypt the block using the expandedKey
+        aes_invMain(block, expandedKey, nbrRounds);
+
+        // unmap the block again into the output
+        for (i = 0; i < 4; i++)
+        {
+            // iterate over the rows
+            for (j = 0; j < 4; j++)
+                output[(i * 4) + j] = block[(i + (j * 4))];
+        }
+
+        // de-allocate memory for expandedKey
+        free(expandedKey);
+        expandedKey = NULL;
+    }
+
+    return SUCCESS;
+}
