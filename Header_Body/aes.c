@@ -309,22 +309,23 @@ void createRoundKey(unsigned char *expandedKey, unsigned char *roundKey)
 
 void aes_main(unsigned char *state, unsigned char *expandedKey, int nbrRounds)
 {
+    int i = 0;
 
-    int i = 0;     												// Inisialisasi variabel iterasi
-    unsigned char roundKey[16];    								// Array untuk menyimpan kunci putaran
-    createRoundKey(expandedKey, roundKey);     					// Membuat kunci putaran pertama
-    addRoundKey(state, roundKey);    							// Menambahkan kunci putaran pertama ke keadaan
+    unsigned char roundKey[16];
 
-    // Melakukan operasi putaran sebanyak (nbrRounds - 1)
+    createRoundKey(expandedKey, roundKey);
+    addRoundKey(state, roundKey);
+
     for (i = 1; i < nbrRounds; i++)
     {
-        createRoundKey(expandedKey + 16 * i, roundKey);        	// Membuat kunci putaran ke-i
-        aes_round(state, roundKey);        						// Melakukan operasi putaran AES pada keadaan
+        createRoundKey(expandedKey + 16 * i, roundKey);
+        aes_round(state, roundKey);
     }
-    createRoundKey(expandedKey + 16 * nbrRounds, roundKey);     // Membuat kunci putaran terakhir
-    subBytes(state);     										// SubBytes transformation
-    shiftRows(state);     										// ShiftRows transformation
-    addRoundKey(state, roundKey);     							// Menambahkan kunci putaran terakhir ke keadaan
+
+    createRoundKey(expandedKey + 16 * nbrRounds, roundKey);
+    subBytes(state);
+    shiftRows(state);
+    addRoundKey(state, roundKey);
 }
 
 char aes_encrypt(unsigned char *input, unsigned char *output, unsigned char *key, enum keySize size) {

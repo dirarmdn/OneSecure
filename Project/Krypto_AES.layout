@@ -10,7 +10,7 @@ TopLine=468
 LeftChar=1
 [Editors]
 Order=1,2,3,4,0,5
-Focused=5
+Focused=3
 [Editor_1]
 CursorCol=1
 CursorRow=44

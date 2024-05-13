@@ -8,16 +8,16 @@
 #include "dhira.h"
 #include "syahid.h"
 
-#define MAX_TEXT_LENGTH 16 // Mendefinisikan panjang maksimum teks
+#define MAX_TEXT_LENGTH 16
 
 int main() {
 
-    int option, i, choice;
+    int option, i, choice, format;
     char inputText[MAX_TEXT_LENGTH];
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
     unsigned char decryptedtext[MAX_TEXT_LENGTH];
-    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
+    unsigned char key[16];
     enum keySize size = SIZE_16;
     char cover_image[100], stego_image[100], secret_message[100];
     const char* secretMessage;
@@ -36,8 +36,8 @@ int main() {
         printf("3. Encrypt with PVD\n");
         printf("4. Decrypt with PVD\n");
         printf("0. Exit\n");
-        printf("Option (Only Real Number): "); // Meminta input pilihan dari pengguna
-        scanf("%d", &option); // Menyimpan input pilihan
+        printf("Option (Only Real Number): ");
+        scanf("%d", &option);
         
         switch (option)
         {
@@ -46,23 +46,19 @@ int main() {
                 system("cls");
                 printf("=========================     OneSecure Encrypt AES     =========================\n");
                 printf("\nInput your message (up to 16 characters): ");
-                scanf("%s", inputText);
+                scanf(" %[^\n]s", &inputText);
                 memset(plaintext, 0, MAX_TEXT_LENGTH);
                 memcpy(plaintext, inputText, strlen(inputText));
                 
-                memset(plaintext, 0, MAX_TEXT_LENGTH); // Mengosongkan array plaintext
-                memcpy(plaintext, inputText, strlen(inputText)); // Menyalin teks input ke array plaintext
-                
-                if (strlen(inputText) > MAX_TEXT_LENGTH) { // Jika teks input melebihi panjang maksimum
-                    printf("\nError: Plaintext is too long. Please enter up to 16 characters.\n"); // Cetak pesan kesalahan
+                if (strlen(inputText) > MAX_TEXT_LENGTH) {
+                    printf("\nError: Plaintext is too long. Please enter up to 16 characters.\n");
                 }
-            } while (strlen(inputText) > MAX_TEXT_LENGTH); // Loop akan berlanjut sampai teks input valid
+            } while (strlen(inputText) > MAX_TEXT_LENGTH);
             
-            aes_encrypt(plaintext, ciphertext, key, size); // Melakukan enkripsi teks
-                
-            printf("Hiding Your Message\nProcessing ..."); // Proses enkripsi
-            sleep(2); // Jeda selama 2 detik
-            printf("\nYour Message Hide Successfully\n"); // Pesan berhasil
+            printf("Enter AES Key (16 characters): ");
+            scanf(" %[^\n]s", key);
+
+            aes_encrypt(plaintext, ciphertext, key, size);
             
             printf("Hiding Your Message\nProcessing ...");
             sleep(2);
@@ -87,12 +83,10 @@ int main() {
 	            }
 			} while (i < MAX_TEXT_LENGTH);
             
-            aes_decrypt(ciphertext, decryptedtext, key, size); // Melakukan dekripsi teks
-                
-            printf("Decrypt your message\n Processing...\n"); // Proses dekripsi
-            sleep(2); // Jeda selama 2 detik
-            printf("\nDecrypted text (HEXADECIMAL):\n"); // Cetak hasil dekripsi dalam format heksadesimal
-            printHex(decryptedtext, MAX_TEXT_LENGTH); // Cetak teks terdekripsi dalam format heksadesimal
+            printf("Enter AES Key (16 characters): ");
+            scanf(" %[^\n]s", key);
+
+            aes_decrypt(ciphertext, decryptedtext, key, size);
             
             printf("Decrypt your message\n Processing...\n");
             sleep(2);
@@ -106,17 +100,17 @@ int main() {
         case 3:
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
-            // printf("1. Encrypt JPG file\n");
-            // printf("2. Encrypt PNG file\n");
-            // printf("Enter choice: ");
-            // scanf("%d", &extention);
+            printf("1. Encrypt JPG file\n");
+            printf("2. Encrypt PNG file\n");
+            printf("Enter choice: ");
+            scanf("%d", &format);
             printf("Enter your secret message: ");
             scanf(" %[^\n]", secret_message);
             printf("Enter your image name: ");
             scanf(" %s", cover_image);
             printf("Enter your output image name: ");
             scanf(" %s", stego_image);
-            embed_process(cover_image, secret_message, stego_image);
+            embed_process(cover_image, secret_message, stego_image, format);
             break;
         case 4:
             system("cls");

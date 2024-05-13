@@ -6,16 +6,13 @@ Welcome to the project repository for Project 2: Library-based Application Devel
 
 OneSecure is a library-based application developed as part of a college project.
 
-## This Program
+## About This Program
 
-Aplikasi ini merupakan aplikasi berbasis library, aplikasi bertujuan untuk mengamankan sebuah pesan atau
-teks dengan metode enkripsi cryptography Advanced Encryption Standard (AES) dan Pixel Value Differencing
-(PVD).
+This application is a library-based application, aiming to secure a message or text using Advanced Encryption Standard (AES) and Pixel Value Differencing (PVD) cryptographic encryption methods.
 
-Aplikasi ini memungkinkan untuk pengguna meng-inputkan sebuah teks yang kemudian akan di enkripsi menggunakan metode
-AES dan bisa juga di enkripsi menggunakan metode PVD.
+This application allows users to input a text which will then be encrypted using AES method and can also be encrypted using PVD method.
 
-Aplikasi ini pun dilengkapi dengan fitur dekripsi yang memungkinkan pengguna untuk mendekripsi pesan atau teks yang sebelumnya sudah di enkripsi oleh metode AES atau PVD.
+The application is also equipped with a decryption feature that allows users to decrypt messages or texts that have been previously encrypted by AES or PVD methods.
 
 ## Features
 1. Encrypt Message (AES)
@@ -49,7 +46,6 @@ NIP 197912242008121001
 ## Function and Procedure
 
 AES :
-
 1. subBytes
 2. shiftRows
 3. invSubBytes
@@ -76,8 +72,7 @@ AES :
 24. invMixColumn
 25. aes_invMain
 
-PVD
-
+PVD :
 1. readPNG
 2. savePNG
 3. embedMessage
