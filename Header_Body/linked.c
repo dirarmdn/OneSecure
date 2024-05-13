@@ -66,13 +66,6 @@ void insertRandChar(address *head) {
 
         pCur = next(pNew);
     } while (pCur != *head);
-
-    // Mencetak isi linked list yang baru disisipi karakter acak
-    pCur = *head;
-    do {
-        printf("%c", data(pCur));
-        pCur = next(pCur);
-    } while (pCur != *head);
 }
 
 
