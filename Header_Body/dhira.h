@@ -32,6 +32,10 @@ void fillNode (address p, infotype data);
 // Param : p (parameter Input-Output)
 void insertRandChar (address *p);
 
+void shiftNode (address *head);
+
+void shuffleNode (address *head);
+
 // Tujuan : Menghubungkan node menjadi sebuah linked list
 // Param(s) : head (parameter Input-Output), data (parameter input)
 void insertNode(address *head, infotype data);

@@ -17,7 +17,7 @@ int main() {
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
     unsigned char decryptedtext[MAX_TEXT_LENGTH];
-    unsigned char key[16];
+    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
     enum keySize size = SIZE_16;
     char cover_image[100], stego_image[100], secret_message[100];
     const char* secretMessage;
@@ -46,7 +46,7 @@ int main() {
                 system("cls");
                 printf("=========================     OneSecure Encrypt AES     =========================\n");
                 printf("\nInput your message (up to 16 characters): ");
-                scanf(" %[^\n]s", &inputText);
+                scanf("%s", inputText);
                 memset(plaintext, 0, MAX_TEXT_LENGTH);
                 memcpy(plaintext, inputText, strlen(inputText));
                 
@@ -55,9 +55,6 @@ int main() {
                 }
             } while (strlen(inputText) > MAX_TEXT_LENGTH);
             
-            printf("Enter AES Key (16 characters): ");
-            scanf(" %[^\n]s", key);
-
             aes_encrypt(plaintext, ciphertext, key, size);
             
             printf("Hiding Your Message\nProcessing ...");
@@ -83,9 +80,6 @@ int main() {
 	            }
 			} while (i < MAX_TEXT_LENGTH);
             
-            printf("Enter AES Key (16 characters): ");
-            scanf(" %[^\n]s", key);
-
             aes_decrypt(ciphertext, decryptedtext, key, size);
             
             printf("Decrypt your message\n Processing...\n");

@@ -30,13 +30,15 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
         insertNode(&head, secretMessage[i]);
     }
 
+    shiftNode(&head);
 	insertRandChar(&head);
     size = countList(head);
-	unsigned char input[size];
-	linkedListToArray(head, input);
+    shuffleNode(&head);
+    unsigned char input[size];
+    linkedListToArray(head, input);
     printf("\nhasil akhir bgt ceritanya:\n");
     for (int i = 0; i < size; i++) {
-        printf("%c", input[i]); // Mencetak isi array
+        printf("%c\n", input[i]); // Mencetak isi array
     }
 
     embedMessage(coverImage, input, stegoImage, format);
