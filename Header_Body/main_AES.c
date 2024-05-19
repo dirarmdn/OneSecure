@@ -17,12 +17,13 @@ int main() {
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
     unsigned char decryptedtext[MAX_TEXT_LENGTH];
-    unsigned char key[16] = {'k', 'k', 'k', 'k', 'e', 'e', 'e', 'e', 'y', 'y', 'y', 'y', '.', '.', '.', '.'};
+    unsigned char key[16];
     enum keySize size = SIZE_16;
     char cover_image[100], stego_image[100], secret_message[100];
     const char* secretMessage;
 	const char* coverImage;
     char menu;
+    
     
     for (;;) {
         // system("cls");
@@ -46,7 +47,7 @@ int main() {
                 system("cls");
                 printf("=========================     OneSecure Encrypt AES     =========================\n");
                 printf("\nInput your message (up to 16 characters): ");
-                scanf("%s", inputText);
+                scanf(" %[^\n]s", inputText);
                 memset(plaintext, 0, MAX_TEXT_LENGTH);
                 memcpy(plaintext, inputText, strlen(inputText));
                 
@@ -55,8 +56,13 @@ int main() {
                 }
             } while (strlen(inputText) > MAX_TEXT_LENGTH);
             
+            printf("Enter AES Key (16 characters): ");
+            scanf(" %[^\n]s", key);
+
             aes_encrypt(plaintext, ciphertext, key, size);
-            
+            struct Node *encryptedLinkedList;
+            outputToLinkedList(plaintext, &encryptedLinkedList);
+
             printf("Hiding Your Message\nProcessing ...");
             sleep(2);
             printf("\nYour Message Hide Successfully\n");
@@ -81,7 +87,9 @@ int main() {
 			} while (i < MAX_TEXT_LENGTH);
             
             aes_decrypt(ciphertext, decryptedtext, key, size);
-            
+            struct Node *decryptedLinkedList;
+            outputToLinkedList(plaintext, &decryptedLinkedList);
+
             printf("Decrypt your message\n Processing...\n");
             sleep(2);
             printf("\nDecrypted text (HEXADECIMAL):\n");
@@ -91,6 +99,7 @@ int main() {
             printASCII(decryptedtext, MAX_TEXT_LENGTH);
             printf("\n\n\n");
             break;
+            
         case 3:
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
