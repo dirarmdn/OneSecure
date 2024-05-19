@@ -59,8 +59,32 @@ Node* rotateDCLL(Node* head, int k, int direction) {
     return current;
 }
 
-int main() {
+void DCLLToArray(Node* head, unsigned char* array, int size) {
+    if (!head) return;
+    Node* temp = head;
+    for (int i = 0; i < size; i++) {
+        array[i] = temp->data;
+        temp = temp->next;
+    }
+}
 
+Node* reverseRotateDCLL(Node* head, int k, int direction) {
+    // Reverse the direction: if it was right (1), make it left (0), and vice versa
+    int reverseDirection = direction == 1 ? 0 : 1;
+    return rotateDCLL(head, k, reverseDirection);
+}
+
+void printDCLL(Node* head) {
+    if (!head) return;
+    Node* temp = head;
+    do {
+        printf("%02x ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+    printf("\n");
+}
+
+int main() {
     int option, i, choice;
     char inputText[MAX_TEXT_LENGTH];
     unsigned char plaintext[MAX_TEXT_LENGTH];
@@ -72,6 +96,9 @@ int main() {
     const char* secretMessage;
     const char* coverImage;
     char menu;
+    int rotationSteps = 3; // Misalnya jumlah langkah rotasi yang digunakan
+    int rotationDirection = 1; // 1 untuk rotasi ke kanan, 0 untuk rotasi ke kiri
+    Node* head = NULL; // Deklarasi head di sini untuk menghindari redefinisi
     
     for (;;) {
         // system("cls");
@@ -112,33 +139,23 @@ int main() {
                 
                 printf("\n(VERY IMPORTANT!!!) keep it in your head\nCiphertext (HEXADECIMAL):\n");
                 printHex(ciphertext, MAX_TEXT_LENGTH);
-                printf("\n\n\n");
+                printf("\n\n");
 
-                // Convert ciphertext to DCLL
-                Node* dcll = arrayToDCLL(ciphertext, MAX_TEXT_LENGTH);
+                // Konversi ciphertext ke DCLL dan lakukan rotasi
+                head = arrayToDCLL(ciphertext, MAX_TEXT_LENGTH);
+                head = rotateDCLL(head, rotationSteps, rotationDirection);
 
-                // Perform rotation (example: rotate 3 steps to the right)
-                int k = 3;
-                int direction = 1; // 1 for right, 0 for left
-                dcll = rotateDCLL(dcll, k, direction);
+                printf("Rotated Ciphertext (DCLL):\n");
+                printDCLL(head);
 
-                // Optionally, print DCLL to verify
-                Node* temp = dcll;
-                printf("DCLL after rotation (HEXADECIMAL):\n");
-                if (temp) {
-                    do {
-                        printf("%02x ", temp->data);
-                        temp = temp->next;
-                    } while (temp != dcll);
-                }
-                printf("\n\n\n");
+                DCLLToArray(head, ciphertext, MAX_TEXT_LENGTH);
 
                 break;
             case 2:
                 do {
                     system("cls");
                     printf("=========================     OneSecure Decrypt AES     =========================\n");
-                    printf("\nInput Your Ciphertext In HEXADECIMAL (separated by space): ");
+                    printf("\nInput Your Rotated Ciphertext In HEXADECIMAL (separated by space): ");
                     for (i = 0; i < MAX_TEXT_LENGTH; i++) {
                         if (scanf("%2x", &ciphertext[i]) != 1) {
                             printf("\nError: Invalid input. Please enter a valid Ciphertext.\n");
@@ -147,6 +164,18 @@ int main() {
                         }
                     }
                 } while (i < MAX_TEXT_LENGTH);
+                
+                // Konversi ciphertext ke DCLL dan kembalikan rotasi
+                head = arrayToDCLL(ciphertext, MAX_TEXT_LENGTH);
+                printf("Ciphertext Before Reverse Rotate (DCLL):\n");
+                printDCLL(head);
+
+                head = reverseRotateDCLL(head, rotationSteps, rotationDirection);
+
+                printf("Ciphertext After Reverse Rotate (DCLL):\n");
+                printDCLL(head);
+
+                DCLLToArray(head, ciphertext, MAX_TEXT_LENGTH);
                 
                 aes_decrypt(ciphertext, decryptedtext, key, size);
                 
@@ -162,10 +191,6 @@ int main() {
             case 3:
                 system("cls");
                 printf("=========================     OneSecure Encrypt PVD     =========================\n");
-                // printf("1. Encrypt JPG file\n");
-                // printf("2. Encrypt PNG file\n");
-                // printf("Enter choice: ");
-                // scanf("%d", &extention);
                 printf("Enter your secret message: ");
                 scanf(" %[^\n]", secret_message);
                 printf("Enter your image name: ");
@@ -196,7 +221,6 @@ int main() {
         if (menu != 'Y' && menu != 'y') {
             break;
         }
-    
     }
     return 0;
 }
