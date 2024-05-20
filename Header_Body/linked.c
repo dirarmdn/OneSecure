@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "dhira.h"
+#include "syahid.h"
 
 address createNode () {
 	address pNew;
@@ -146,6 +147,10 @@ void linkedListToArray(address head, unsigned char* array) {
         pCur = next(pCur); // Memindahkan pCur ke node berikutnya
         i++; // Menambahkan indeks array
     } while (pCur != head);
+}
+
+void ArraytoLinkedList(infotype arr[], int size) {
+    
 }
 
 
