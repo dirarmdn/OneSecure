@@ -28,8 +28,29 @@ int main() {
     int rotationDirection = 1; // 1 untuk rotasi ke kanan, 0 untuk rotasi ke kiri
     Node* head = NULL; // Deklarasi head di sini untuk menghindari redefinisi
     
+<<<<<<< HEAD
     do {
         switch (option) {
+=======
+    
+    for (;;) {
+        // system("cls");
+        printf("||=================================================||\n");
+        printf("||                WELCOME TO OneSecure             ||\n");
+        printf("||=================================================||\n");
+    
+        printf("\nSelect an option:\n");
+        printf("1. Encrypt with AES\n");
+        printf("2. Decrypt with AES\n");
+        printf("3. Encrypt with PVD\n");
+        printf("4. Decrypt with PVD\n");
+        printf("0. Exit\n");
+        printf("Option (Only Real Number): ");
+        scanf("%d", &option);
+        
+        switch (option)
+        {
+>>>>>>> 866b784af549a1610ec24a0cf1b0665a227ba451
             case 1:
                 system("cls");
                 printf("||=================================================||\n");
@@ -61,7 +82,7 @@ int main() {
                 system("cls");
                 printf("=========================     OneSecure Encrypt AES     =========================\n");
                 printf("\nInput your message (up to 16 characters): ");
-                scanf(" %[^\n]s", &inputText);
+                scanf(" %[^\n]s", inputText);
                 memset(plaintext, 0, MAX_TEXT_LENGTH);
                 memcpy(plaintext, inputText, strlen(inputText));
                 
@@ -74,7 +95,9 @@ int main() {
             scanf(" %[^\n]s", key);
 
             aes_encrypt(plaintext, ciphertext, key, size);
-            
+            struct Node *encryptedLinkedList;
+            outputToLinkedList(plaintext, &encryptedLinkedList);
+
             printf("Hiding Your Message\nProcessing ...");
             sleep(2);
             printf("\nYour Message Hide Successfully\n");
@@ -98,11 +121,10 @@ int main() {
 	            }
 			} while (i < MAX_TEXT_LENGTH);
             
-            printf("Enter AES Key (16 characters): ");
-            scanf(" %[^\n]s", key);
-
             aes_decrypt(ciphertext, decryptedtext, key, size);
-            
+            struct Node *decryptedLinkedList;
+            outputToLinkedList(plaintext, &decryptedLinkedList);
+
             printf("Decrypt your message\n Processing...\n");
             sleep(2);
             printf("\nDecrypted text (HEXADECIMAL):\n");
@@ -110,10 +132,17 @@ int main() {
             
             printf("\nDecrypted text (ASCII):\n");
             printASCII(decryptedtext, MAX_TEXT_LENGTH);
+<<<<<<< HEAD
             system("pause");
             option = 1;
 
         case 4:
+=======
+            printf("\n\n\n");
+            break;
+            
+        case 3:
+>>>>>>> 866b784af549a1610ec24a0cf1b0665a227ba451
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
             printf("1. Encrypt JPG file\n");
