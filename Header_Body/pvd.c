@@ -159,7 +159,7 @@ void extractMessage(const char* stegoImage) {
 
     // Print pesan yang diekstrak
     printf("Pesan yang diekstrak: %s\n", extractedMessage);
-    //extractProcess(extractedMessage);
+    extractProcess(extractedMessage);
 
     // Bebaskan memori
     free(extractedMessage);
@@ -170,5 +170,7 @@ void extractProcess(const char* extractedMessage) {
     address head = NULL;
     ArraytoLinkedList(extractedMessage, &head);
     shuffleNode(&head);
+    deletefirst5node(&head);
+    //deletelast5node(&head);
     printLinkedList(&head);
 }
