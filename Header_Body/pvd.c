@@ -22,7 +22,7 @@ void saveJPG(const char* filename, unsigned char* data, int width, int height) {
     stbi_write_jpg(filename, width, height, 3, data, width * 3);
 }
 
-void embed_process(const char* coverImage, const char* secretMessage, const char* stegoImage, int format) {
+void embed_process(const char* coverImage, const char* secretMessage, const char* stegoImage, int option) {
     int i, size;
     address head = NULL;
 
@@ -41,10 +41,10 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
         printf("%c\n", input[i]); // Mencetak isi array
     }
 
-    embedMessage(coverImage, input, stegoImage, format);
+    embedMessage(coverImage, input, stegoImage, option);
 }
 
-void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage, int format) {
+void embedMessage(const char* coverImage, const char* secretMessage, const char* stegoImage, int option) {
     int width, height, channels;
     unsigned char* image = readIMG(coverImage, &width, &height, &channels);
 
@@ -98,7 +98,7 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
     }
 
     // Simpan gambar stego
-    if (format == 2) {
+    if (option == 2) {
         savePNG(stegoImage, image, width, height);    
     } else {
         saveJPG(stegoImage, image, width, height);
@@ -106,6 +106,7 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
         
     // Bebaskan memori gambar
     free(image);
+    option = 1;
 }
 
 // Tujuan : Mengekstrak pesan rahasia yang sudah disisipkan pada gambar stego
