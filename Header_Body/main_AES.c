@@ -28,6 +28,8 @@ int main() {
     Node* head = NULL; // Deklarasi head di sini untuk menghindari redefinisi
     
     do {
+        printf("Silahkan pilih: ");
+        scanf("%d", &option);
         switch (option) {
             case 1:
                 system("cls");
@@ -73,8 +75,6 @@ int main() {
                 scanf(" %[^\n]s", key);
 
                 aes_encrypt(plaintext, ciphertext, key, size);
-                struct Node *encryptedLinkedList;
-                outputToLinkedList(plaintext, &encryptedLinkedList);
 
                 printf("Hiding Your Message\nProcessing ...");
                 sleep(2);
@@ -100,8 +100,6 @@ int main() {
                 } while (i < MAX_TEXT_LENGTH);
                 
                 aes_decrypt(ciphertext, decryptedtext, key, size);
-                struct Node *decryptedLinkedList;
-                outputToLinkedList(plaintext, &decryptedLinkedList);
 
                 printf("Decrypt your message\n Processing...\n");
                 sleep(2);
