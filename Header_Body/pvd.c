@@ -18,9 +18,6 @@ void savePNG(const char* filename, unsigned char* data, int width, int height) {
     stbi_write_png(filename, width, height, 3, data, width * 3);        
 }
 
-void saveJPG(const char* filename, unsigned char* data, int width, int height) {
-    stbi_write_jpg(filename, width, height, 3, data, width * 3);
-}
 
 void embed_process(const char* coverImage, const char* secretMessage, const char* stegoImage, int format) {
     int i, size;
@@ -98,11 +95,8 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
     }
 
     // Simpan gambar stego
-    if (format == 2) {
         savePNG(stegoImage, image, width, height);    
-    } else {
-        saveJPG(stegoImage, image, width, height);
-    }
+
         
     // Bebaskan memori gambar
     free(image);
@@ -164,8 +158,16 @@ void extractMessage(const char* stegoImage) {
 
     // Print pesan yang diekstrak
     printf("Pesan yang diekstrak: %s\n", extractedMessage);
+    //extractProcess(extractedMessage);
 
     // Bebaskan memori
     free(extractedMessage);
     free(image);
+}
+
+void extractProcess(const char* extractedMessage) {
+    address head = NULL;
+    ArraytoLinkedList(extractedMessage, &head);
+    shuffleNode(&head);
+    printLinkedList(&head);
 }

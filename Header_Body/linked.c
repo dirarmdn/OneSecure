@@ -149,8 +149,27 @@ void linkedListToArray(address head, unsigned char* array) {
     } while (pCur != head);
 }
 
-void ArraytoLinkedList(infotype arr[], int size) {
-    
+void ArraytoLinkedList(const char *extractedMessage, address *head) {
+    int i = 0;
+    while (extractedMessage[i] != '\0') {
+        insertNode(head, extractedMessage[i]);
+        i++;
+    }
+}
+
+void printLinkedList(address *head) {
+    if (head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    address current = *head;
+    printf("Isi linked list: ");
+    do {
+        printf("%c ", data(current));
+        current = next(current);
+    } while (current != *head);
+    printf("\n");
 }
 
 
