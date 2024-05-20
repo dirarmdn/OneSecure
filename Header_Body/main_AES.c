@@ -12,7 +12,8 @@
 
 int main() {
 
-    int option, i, choice, format;
+    int option = 1;
+    int i, choice, format;
     char inputText[MAX_TEXT_LENGTH];
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
@@ -23,25 +24,39 @@ int main() {
     const char* secretMessage;
 	const char* coverImage;
     char menu;
+    int rotationSteps = 3; // Misalnya jumlah langkah rotasi yang digunakan
+    int rotationDirection = 1; // 1 untuk rotasi ke kanan, 0 untuk rotasi ke kiri
+    Node* head = NULL; // Deklarasi head di sini untuk menghindari redefinisi
     
-    for (;;) {
-        // system("cls");
-        printf("||=================================================||\n");
-        printf("||                WELCOME TO OneSecure             ||\n");
-        printf("||=================================================||\n");
-    
-        printf("\nSelect an option:\n");
-        printf("1. Encrypt with AES\n");
-        printf("2. Decrypt with AES\n");
-        printf("3. Encrypt with PVD\n");
-        printf("4. Decrypt with PVD\n");
-        printf("0. Exit\n");
-        printf("Option (Only Real Number): ");
-        scanf("%d", &option);
-        
-        switch (option)
-        {
+    do {
+        switch (option) {
             case 1:
+                system("cls");
+                printf("||=================================================||\n");
+                printf("||\tWELCOME TO OneSecure\t||\n");
+                printf("||=================================================||\n");
+                printf("\nSelect an option:\n");
+                printf("1. Encrypt with AES\n");
+                printf("2. Decrypt with AES\n");
+                printf("3. Encrypt with PVD\n");
+                printf("4. Decrypt with PVD\n");
+                printf("0. Exit\n");
+                printf("Silahkan pilih: ");
+                scanf("%d", &choice);
+                if (choice = 1){
+                    option = 2;
+                } else if (choice = 2) {
+                    option = 3;
+                } else if (choice= 3){
+                    option = 4;
+                } else if (choice = 4){
+                    option = 5;
+                } else if (choice = 0){
+                    option = 0;
+                }
+                option  = 1;
+
+            case 2:
             do {
                 system("cls");
                 printf("=========================     OneSecure Encrypt AES     =========================\n");
@@ -66,12 +81,12 @@ int main() {
             
             printf("\n(VERY IMPORTANT!!!) keep it in your head\nCiphertext (HEXADECIMAL):\n");
             printHex(ciphertext, MAX_TEXT_LENGTH);
-            printf("\n\n\n");
+            system("pause");
+            option = 1;
 
-            break;
-        case 2:
+        case 3:
             do {
-            system("cls");
+            system("cls"); 
 	            printf("=========================     OneSecure Decrypt AES     =========================\n");
 	            printf("\nInput Your Ciphertext In HEXADECIMAL (separated by space): ");
 	            for (i = 0; i < MAX_TEXT_LENGTH; i++) {
@@ -95,30 +110,30 @@ int main() {
             
             printf("\nDecrypted text (ASCII):\n");
             printASCII(decryptedtext, MAX_TEXT_LENGTH);
-            printf("\n\n\n");
-            break;
-        case 3:
+            system("pause");
+            option = 1;
+
+        case 4:
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
             printf("1. Encrypt JPG file\n");
             printf("2. Encrypt PNG file\n");
             printf("Enter choice: ");
-            scanf("%d", &format);
+            scanf("%d", &option);
             printf("Enter your secret message: ");
             scanf(" %[^\n]", secret_message);
             printf("Enter your image name: ");
             scanf(" %s", cover_image);
             printf("Enter your output image name: ");
             scanf(" %s", stego_image);
-            embed_process(cover_image, secret_message, stego_image, format);
-            break;
-        case 4:
+            embed_process(cover_image, secret_message, stego_image, option);
+        case 5:
             system("cls");
             printf("=========================     OneSecure Decrypt PVD     =========================\n");
             printf("Enter your image name: ");
             scanf(" %s", stego_image);
             extractMessage(stego_image);
-            break;
+            option = 1;
         case 0:
             printf("\nExiting...\n");
             sleep(2);
@@ -126,17 +141,9 @@ int main() {
             break;
         default:
             printf("\n invalid option. Please try again.\n");
-        }
-
-        printf("Back to menu? (Y/N) \n");
-        scanf(" %c", &menu);
-
-        if (menu != 'Y' && menu != 'y') {
             break;
         }
-    
-    }
+    } while (option != 0);
     return 0;
-
 }
 
