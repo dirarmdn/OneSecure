@@ -3,7 +3,6 @@
 #include <string.h>
 #include <time.h>
 #include "dhira.h"
-#include "syahid.h"
 
 address createNode () {
 	address pNew;
@@ -60,12 +59,12 @@ void shiftNode (address *head) {
         pCur = next(pCur);
     };
 
-    pCur = *head;
-    printf("\nshift node:\n");
-    do {
-        printf("%c", data(pCur));
-        pCur = next(pCur);
-    } while (pCur != *head);
+    // pCur = *head;
+    // printf("\nshift node:\n");
+    // do {
+    //     printf("%c", data(pCur));
+    //     pCur = next(pCur);
+    // } while (pCur != *head);
 }
 
 void shuffleNode(address *head) {
@@ -176,7 +175,7 @@ void printLinkedList(address *head) {
 // int main() {
 //     int i, size;
 //     address head = NULL;
-//     const char* secretMessage = "halo";
+//     const char* secretMessage = "elvis";
 
 //     for (i = 0; i < strlen(secretMessage); i++) {
 //         insertNode(&head, secretMessage[i]);

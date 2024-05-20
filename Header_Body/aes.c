@@ -563,3 +563,68 @@ void printASCII(unsigned char *text, int length) {
     printf("\n");
 }
 
+
+Node* createDCLLNode(unsigned char data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = newNode->prev = newNode;
+    return newNode;
+}
+Node* append(Node* head, unsigned char data) {
+    Node* newNode = createDCLLNode(data);
+    if (!head) {
+        return newNode;
+    }
+    Node* tail = head->prev;
+    tail->next = newNode;
+    newNode->prev = tail;
+    newNode->next = head;
+    head->prev = newNode;
+    return head;
+}
+Node* arrayToDCLL(unsigned char* array, int size) {
+    Node* head = NULL;
+    for (int i = 0; i < size; i++) {
+        head = append(head, array[i]);
+    }
+    return head;
+}
+Node* rotateDCLL(Node* head, int k, int direction) {
+    if (!head) return NULL;
+    Node* current = head;
+    if (direction == 1) { // Rotasi ke kanan
+        for (int i = 0; i < k; i++) {
+            current = current->prev;
+        }
+    } else if (direction == 0) { // Rotasi ke kiri
+        for (int i = 0; i < k; i++) {
+            current = current->next;
+        }
+    }
+    return current;
+}
+
+void DCLLToArray(Node* head, unsigned char* array, int size) {
+    if (!head) return;
+    Node* temp = head;
+    for (int i = 0; i < size; i++) {
+        array[i] = temp->data;
+        temp = temp->next;
+    }
+}
+
+Node* reverseRotateDCLL(Node* head, int k, int direction) {
+    // Reverse the direction: if it was right (1), make it left (0), and vice versa
+    int reverseDirection = direction == 1 ? 0 : 1;
+    return rotateDCLL(head, k, reverseDirection);
+}
+
+void printDCLL(Node* head) {
+    if (!head) return;
+    Node* temp = head;
+    do {
+        printf("%02x ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+    printf("\n");
+}
