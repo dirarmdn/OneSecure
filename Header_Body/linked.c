@@ -59,12 +59,12 @@ void shiftNode (address *head) {
         pCur = next(pCur);
     };
 
-    // pCur = *head;
-    // printf("\nshift node:\n");
-    // do {
-    //     printf("%c", data(pCur));
-    //     pCur = next(pCur);
-    // } while (pCur != *head);
+    pCur = *head;
+    printf("\nshift node:\n");
+    do {
+        printf("%c", data(pCur));
+        pCur = next(pCur);
+    } while (pCur != *head);
 }
 
 void shuffleNode(address *head) {
@@ -152,7 +152,7 @@ void linkedListToArray(address head, unsigned char* array) {
 // int main() {
 //     int i, size;
 //     address head = NULL;
-//     const char* secretMessage = "elvis";
+//     const char* secretMessage = "halo";
 
 //     for (i = 0; i < strlen(secretMessage); i++) {
 //         insertNode(&head, secretMessage[i]);

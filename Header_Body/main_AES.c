@@ -94,7 +94,7 @@ int main() {
         case 3:
             system("cls");
             printf("=========================     OneSecure Encrypt PVD     =========================\n");
-            printf("1. Encrypt JPG file\n");
+            printf("1. Encrypt JPG file\n"); //test
             printf("2. Encrypt PNG file\n");
             printf("Enter choice: ");
             scanf("%d", &format);
