@@ -138,7 +138,7 @@ int countList(address head) {
     return count;
 }
 
-void linkedListToArray(address head, unsigned char* array) {
+void linkedListToArray(address head, char* array) {
     address pCur = head;
     int i = 0;
     do {
@@ -146,6 +146,7 @@ void linkedListToArray(address head, unsigned char* array) {
         pCur = next(pCur); // Memindahkan pCur ke node berikutnya
         i++; // Menambahkan indeks array
     } while (pCur != head);
+    array[i] = '\0'; // Pastikan string diakhiri dengan null terminator
 }
 
 void ArraytoLinkedList(const char *extractedMessage, address *head) {

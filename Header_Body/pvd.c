@@ -33,7 +33,7 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
     unsigned char input[size];
     linkedListToArray(head, input);
     printf("\nhasil akhir bgt ceritanya:\n");
-    for (int i = 0; i <= size; i++) {
+    for (int i = 0; i <= size-1; i++) {
         printf("%c ", input[i]); // Mencetak isi array
     }
 
@@ -94,12 +94,11 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
     }
 
     // Simpan gambar stego
-        savePNG(stegoImage, image, width, height);    
+    savePNG(stegoImage, image, width, height);    
 
         
     // Bebaskan memori gambar
     free(image);
-    option = 1;
 }
 
 // Tujuan : Mengekstrak pesan rahasia yang sudah disisipkan pada gambar stego
