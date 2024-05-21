@@ -148,6 +148,77 @@ void linkedListToArray(address head, unsigned char* array) {
     } while (pCur != head);
 }
 
+void ArraytoLinkedList(const char *extractedMessage, address *head) {
+    int i = 0;
+    while (extractedMessage[i] != '\0') {
+        insertNode(head, extractedMessage[i]);
+        i++;
+    }
+}
+
+void deletefirst5node(address *head) {
+    if (*head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    address current = *head;
+    int count = 0;
+
+    // Iterasi melalui 5 node pertama
+    while (current != NULL && count <= 5) {
+        address nextNode = next(current);
+        free(current);
+        current = nextNode;
+        count++;
+    }
+
+    // Atur head baru setelah penghapusan
+    *head = current;
+
+}
+
+/*void deletelast5node(address *head) {
+    if (*head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    // Traverse to the last node
+    address current = *head;
+    while (next(current) != *head) {
+        current = next(current);
+    }
+
+    // Traverse back and delete the last 5 nodes
+    int count = 0;
+    while (count < 5 && current != *head) {
+        address prevNode = prev(current); // Get the previous node
+        free(current); // Delete the current node
+        current = prevNode; // Move to the previous node
+        count++;
+    }
+
+    // Update the next pointer of the last remaining node
+    next(current) = *head;
+}*/
+
+
+void printLinkedList(address *head) {
+    if (head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    address current = *head;
+    printf("Isi linked list: ");
+    do {
+        printf("%c ", data(current));
+        current = next(current);
+    } while (current != *head);
+    printf("\n");
+}
+
 
 // int main() {
 //     int i, size;
