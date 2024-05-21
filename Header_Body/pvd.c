@@ -18,7 +18,6 @@ void savePNG(const char* filename, unsigned char* data, int width, int height) {
     stbi_write_png(filename, width, height, 3, data, width * 3);        
 }
 
-
 void embed_process(const char* coverImage, const char* secretMessage, const char* stegoImage, int option) {
     int i, size;
     address head = NULL;
@@ -34,8 +33,8 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
     unsigned char input[size];
     linkedListToArray(head, input);
     printf("\nhasil akhir bgt ceritanya:\n");
-    for (int i = 0; i < size; i++) {
-        printf("%c\n", input[i]); // Mencetak isi array
+    for (int i = 0; i <= size; i++) {
+        printf("%c ", input[i]); // Mencetak isi array
     }
 
     embedMessage(coverImage, input, stegoImage, option);

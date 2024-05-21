@@ -236,8 +236,8 @@ void printLinkedList(address *head) {
 //     unsigned char input[size];
 //     linkedListToArray(head, input);
 //     printf("\nhasil akhir bgt ceritanya:\n");
-//     for (int i = 0; i < size; i++) {
-//         printf("%c", input[i]); // Mencetak isi array
+//     for (int i = 0; i <= size; i++) {
+//         printf("%c ", input[i]); // Mencetak isi array
 //     }
 
 // }
