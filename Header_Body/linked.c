@@ -142,11 +142,11 @@ void linkedListToArray(address head, char* array) {
     address pCur = head;
     int i = 0;
     do {
-        array[i] = data(pCur); // Menyalin data ke dalam array
-        pCur = next(pCur); // Memindahkan pCur ke node berikutnya
-        i++; // Menambahkan indeks array
+        array[i] = data(pCur);
+        pCur = next(pCur);
+        i++;
     } while (pCur != head);
-    array[i] = '\0'; // Pastikan string diakhiri dengan null terminator
+    array[i] = '\0';
 }
 
 void ArraytoLinkedList(const char *extractedMessage, address *head) {
