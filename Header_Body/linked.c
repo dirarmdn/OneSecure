@@ -205,6 +205,31 @@ void deleteRandChar(address *head) {
     }
 }
 
+void unshiftnode(address *head) {
+    if (*head == NULL || next(*head) == *head) {
+        // Jika linked list kosong atau hanya ada satu node
+        return;
+    }
+
+    address pLast = prev(*head); // Simpan node terakhir
+    address pFirstAfterHead = next(*head); // Simpan node pertama setelah head
+    infotype temp;
+
+    while (next(pLast) != pFirstAfterHead) { // Iterasi sampai sebelum node pertama setelah head
+        temp = data(pLast);
+        data(pLast) = data(prev(pLast));
+        data(prev(pLast)) = temp;
+        pLast = prev(pLast);
+    }
+
+    // Set next dari node terakhir menjadi node pertama setelah head
+    next(pLast) = pFirstAfterHead;
+    // Set prev dari node pertama setelah head menjadi node terakhir
+    prev(pFirstAfterHead) = pLast;
+    // Set head baru menjadi node terakhir
+    *head = pLast;
+}
+
 /*void deletefirst5node(address *head) {
     if (*head == NULL) {
         printf("Linked list kosong.\n");
@@ -260,7 +285,7 @@ void printLinkedList(address *head) {
     }
 
     address current = *head;
-    printf("Isi linked list: ");
+    printf("Pesan yang disisipkan: ");
     do {
         printf("%c ", data(current));
         current = next(current);

@@ -11,6 +11,8 @@ void printLinkedList(address *head);
 
 void deleteRandChar(address *head);
 
+void unshiftnode(address *head);
+
 //void deletefirst5node(address *head);
 
 //void deletelast5node(address *head);
