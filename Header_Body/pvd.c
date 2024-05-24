@@ -168,7 +168,7 @@ void extractProcess(const char* extractedMessage) {
     address head = NULL;
     ArraytoLinkedList(extractedMessage, &head);
     shuffleNode(&head);
-    deletefirst5node(&head);
+    //deletefirst5node(&head);
     //deletelast5node(&head);
     printLinkedList(&head);
 }
