@@ -14,6 +14,10 @@ unsigned char* readIMG(const char* filename, int* width, int* height, int* chann
     return stbi_load(filename, width, height, channels, STBI_rgb);
 }
 
+void saveBMP(const char* filename, unsigned char* data, int width, int height) {
+    stbi_write_bmp(filename, width, height, 3, data);
+}
+
 void savePNG(const char* filename, unsigned char* data, int width, int height) {
     stbi_write_png(filename, width, height, 3, data, width * 3);        
 }
@@ -32,10 +36,6 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
     shuffleNode(&head);
     unsigned char input[size];
     linkedListToArray(head, input);
-    printf("\nhasil akhir bgt ceritanya:\n");
-    for (int i = 0; i <= size-1; i++) {
-        printf("%c ", input[i]); // Mencetak isi array
-    }
 
     embedMessage(coverImage, input, stegoImage, option);
 }
@@ -93,8 +93,11 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
         }
     }
 
-    // Simpan gambar stego
-    savePNG(stegoImage, image, width, height);    
+    if (option == 1) {
+        saveBMP(stegoImage, image, width, height);
+    } else {
+        savePNG(stegoImage, image, width, height);
+    }
 
         
     // Bebaskan memori gambar
