@@ -157,7 +157,55 @@ void ArraytoLinkedList(const char *extractedMessage, address *head) {
     }
 }
 
-void deletefirst5node(address *head) {
+void deleteRandChar(address *head) {
+    if (*head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    address current = *head;
+    int position = 1; // Start position from 0
+
+    do {
+        address nextNode = next(current);
+
+        // Check if the current position is even
+        if (position % 2 == 0) {
+            // If the node to be deleted is the head, update the head
+            if (current == *head) {
+                *head = next(current);
+                if (*head == current) { // Only one node was in the list
+                    *head = NULL;
+                }
+            }
+
+            // Unlink the node
+            prev(nextNode) = prev(current);
+            next(prev(current)) = nextNode;
+            free(current);
+
+            if (*head == NULL) {
+                break; // List became empty
+            }
+        }
+
+        current = nextNode;
+        position++;
+
+    } while (current != *head);
+
+    // Ensure the list is properly circular
+    if (*head != NULL) {
+        address last = *head;
+        while (next(last) != *head) {
+            last = next(last);
+        }
+        prev(*head) = last;
+        next(last) = *head;
+    }
+}
+
+/*void deletefirst5node(address *head) {
     if (*head == NULL) {
         printf("Linked list kosong.\n");
         return;
@@ -177,7 +225,7 @@ void deletefirst5node(address *head) {
     // Atur head baru setelah penghapusan
     *head = current;
 
-}
+}*/
 
 /*void deletelast5node(address *head) {
     if (*head == NULL) {

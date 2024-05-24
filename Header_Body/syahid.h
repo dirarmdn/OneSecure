@@ -9,7 +9,9 @@ void ArraytoLinkedList(const char *extractedMessage, address *head);
 
 void printLinkedList(address *head);
 
-void deletefirst5node(address *head);
+void deleteRandChar(address *head);
+
+//void deletefirst5node(address *head);
 
 //void deletelast5node(address *head);
 
