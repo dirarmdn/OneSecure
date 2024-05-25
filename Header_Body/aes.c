@@ -527,7 +527,7 @@ char aes_decrypt(unsigned char *input, unsigned char *output, unsigned char *key
     }
 
     expandKey(expandedKey, key, size, expandedKeySize); // Memperluas kunci
- 
+
     aes_invMain(block, expandedKey, nbrRounds); // Melakukan dekripsi blok menggunakan kunci yang diperluas
 
     // Memasukkan blok yang telah didekripsi ke dalam output
@@ -563,7 +563,6 @@ void printASCII(unsigned char *text, int length) {
     printf("\n");
 }
 
-
 Node* createDCLLNode(unsigned char data) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = data;
@@ -582,6 +581,7 @@ Node* append(Node* head, unsigned char data) {
     head->prev = newNode;
     return head;
 }
+
 Node* arrayToDCLL(unsigned char* array, int size) {
     Node* head = NULL;
     for (int i = 0; i < size; i++) {
@@ -589,7 +589,29 @@ Node* arrayToDCLL(unsigned char* array, int size) {
     }
     return head;
 }
-Node* rotateDCLL(Node* head, int k, int direction) {
+
+Node* insertRandomNode(Node* head, unsigned char data) {
+    if (head == NULL) return NULL;
+    Node* newNode = createDCLLNode(data);
+    Node* randomNode = head;
+    int length = 1;
+    while (randomNode->next != head) {
+        randomNode = randomNode->next;
+        length++;
+    }
+    int randomIndex = rand() % length;
+    randomNode = head;
+    for (int i = 0; i < randomIndex; i++) {
+        randomNode = randomNode->next;
+    }
+    newNode->next = randomNode->next;
+    newNode->prev = randomNode;
+    randomNode->next->prev = newNode;
+    randomNode->next = newNode;
+    return newNode; // Return the newly added node
+}
+
+Node* rotateDCLL(Node* head, int k, int direction,  Node** insertedNode) {
     if (!head) return NULL;
     Node* current = head;
     Node* temp = head;
@@ -612,6 +634,45 @@ Node* rotateDCLL(Node* head, int k, int direction) {
                 current = current->prev->next;
                 current = temp->prev;
             }
+        }  
+    }
+    *insertedNode = insertRandomNode(current, (unsigned char)(rand() % 256));
+    return current;
+}
+
+Node* removeNode(Node* head, Node* nodeToRemove) {
+    if (!head || !nodeToRemove) return head;
+
+    if (nodeToRemove->next == nodeToRemove) {
+        free(nodeToRemove);
+        return NULL; // Only one node was in the list
+    }
+
+    nodeToRemove->prev->next = nodeToRemove->next;
+    nodeToRemove->next->prev = nodeToRemove->prev;
+
+    if (nodeToRemove == head) {
+        head = nodeToRemove->next;
+    }
+
+    free(nodeToRemove);
+    return head;
+}
+
+Node* reverseRotateDCLL(Node* head, int k, int direction, Node* insertedNode) {
+    // Remove the specific random node added
+    head = removeNode(head, insertedNode);
+    
+    // Reverse the direction: if it was right (1), make it left (0), and vice versa
+    int reverseDirection = direction == 1 ? 0 : 1;
+    Node* current = head;
+    if (reverseDirection == 1) { // Rotate right
+        for (int i = 0; i < k; i++) {
+            current = current->prev;
+        }
+    } else if (reverseDirection == 0) { // Rotate left
+        for (int i = 0; i < k; i++) {
+            current = current->next;
         }
     }
     return current;
@@ -624,12 +685,6 @@ void DCLLToArray(Node* head, unsigned char* array, int size) {
         array[i] = temp->data;
         temp = temp->next;
     }
-}
-
-Node* reverseRotateDCLL(Node* head, int k, int direction) {
-    // Reverse the direction: if it was right (1), make it left (0), and vice versa
-    int reverseDirection = direction == 1 ? 0 : 1;
-    return rotateDCLL(head, k, reverseDirection);
 }
 
 void printDCLL(Node* head) {
