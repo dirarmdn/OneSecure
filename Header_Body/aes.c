@@ -592,13 +592,26 @@ Node* arrayToDCLL(unsigned char* array, int size) {
 Node* rotateDCLL(Node* head, int k, int direction) {
     if (!head) return NULL;
     Node* current = head;
+    Node* temp = head;
     if (direction == 1) { // Rotasi ke kanan
         for (int i = 0; i < k; i++) {
             current = current->prev;
+            if ((i % 2) == 0) {
+                printf("DEBUG");
+                temp = current;
+                current = current->next->prev;
+                current = temp->next;
+            }
         }
     } else if (direction == 0) { // Rotasi ke kiri
         for (int i = 0; i < k; i++) {
             current = current->next;
+            if ((i % 2) == 0) {
+                printf("DEBUG");
+                temp = current;
+                current = current->prev->next;
+                current = temp->prev;
+            }
         }
     }
     return current;

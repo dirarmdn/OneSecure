@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <math.h>
 #include "raihan.h"
 #include "dwika.h"
 #include "alya.h"
@@ -14,7 +15,7 @@
 int main() {
     int option = 1;
     int i, choice;
-    int rotationSteps = 3; // Misalnya jumlah langkah rotasi yang digunakan
+    int rotationSteps = 8; // Misalnya jumlah langkah rotasi yang digunakan
     int rotationDirection = 1; // 1 untuk rotasi ke kanan, 0 untuk rotasi ke kiri
     bool cek;
     char inputText[MAX_TEXT_LENGTH];
@@ -103,8 +104,8 @@ int main() {
                     sleep(1);
                     printf(">> Your Message Hide Successfully!!!\n");
                     
-                    //printf(">> hidden word in HEXADECIMAL:\n>> ");
-                    //printHex(ciphertext, MAX_TEXT_LENGTH);
+                    printf(">> hidden word in HEXADECIMAL:\n>> ");
+                    printHex(ciphertext, MAX_TEXT_LENGTH);
 
                     head = arrayToDCLL(ciphertext, MAX_TEXT_LENGTH);
                     head = rotateDCLL(head, rotationSteps, rotationDirection);
@@ -230,7 +231,7 @@ int main() {
                     system("cls");
                         printf(">>>>>>>>>>>>>>>>>>\tOneSecure Decrypt PVD\t<<<<<<<<<<<<<<<<<<\n\n");
                     do {
-                        rintf(">> Enter your image name: ");
+                        printf(">> Enter your image name: ");
                         scanf(" %s", stego_image);
 
                         // Cek ekstensi file stego image
