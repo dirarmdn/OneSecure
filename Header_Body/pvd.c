@@ -95,8 +95,10 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
 
     if (option == 1) {
         saveBMP(stegoImage, image, width, height);
+        printf(">> Your Message Hide Successfully!!!\n");
     } else {
         savePNG(stegoImage, image, width, height);
+        printf(">> Your Message Hide Successfully!!!\n");
     }
 
         
