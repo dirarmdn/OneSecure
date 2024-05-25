@@ -285,9 +285,9 @@ void printLinkedList(address *head) {
     }
 
     address current = *head;
-    printf("Pesan yang disisipkan: ");
+    printf(">> Pesan yang disisipkan: ");
     do {
-        printf("%c ", data(current));
+        printf("%c", data(current));
         current = next(current);
     } while (current != *head);
     printf("\n");
