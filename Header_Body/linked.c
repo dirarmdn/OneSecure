@@ -54,20 +54,11 @@ void shiftNode (address *head) {
         temp = data(pCur);
         data(pCur) = data(next(pCur));
         data(next(pCur)) = temp;
-        // printf("\n%c", data(pCur));
-        // printf("%c\n", data(next(pCur)));
         pCur = next(pCur);
     };
-
-    // pCur = *head;
-    // printf("\nshift node:\n");
-    // do {
-    //     printf("%c", data(pCur));
-    //     pCur = next(pCur);
-    // } while (pCur != *head);
 }
 
-void shuffleNode(address *head) {
+void rotateList(address *head) {
     address pCur, temp;
 
     pCur = *head; 
@@ -81,13 +72,6 @@ void shuffleNode(address *head) {
     next(pCur) = prev(pCur); // Ubah pointer next dari node terakhir menjadi prev
     prev(pCur) = temp; // Ubah pointer prev dari node terakhir menjadi next yang disimpan sebelumnya
     *head = pCur; // Atur head baru
-
-    // printf("\nshuffle node:\n");
-    // pCur = *head;
-    // do {
-    //     printf("%c", data(pCur));
-    //     pCur = next(pCur);
-    // } while (pCur != *head);
 }
 
 void insertRandChar(address *head) {
@@ -113,17 +97,9 @@ void insertRandChar(address *head) {
         // Memindahkan pointer ke node baru
         pCur = next(pCur);
         if (pCur != *head) {
-            pCur = next(pCur); // Pindahkan lagi jika tidak mencapai kepala
+            pCur = next(pCur); // Pindahkan lagi jika tidak mencapai head
         }
     } while (pCur != *head);
-
-    // Mencetak isi linked list yang baru disisipi karakter acak
-    // pCur = *head;
-    // printf("\ninsert rand:\n");
-    // do {
-    //     printf("%c", data(pCur));
-    //     pCur = next(pCur);
-    // } while (pCur != *head);
 }
 
 int countList(address head) {
@@ -138,14 +114,159 @@ int countList(address head) {
     return count;
 }
 
-void linkedListToArray(address head, unsigned char* array) {
+void linkedListToArray(address head, char* array) {
     address pCur = head;
     int i = 0;
     do {
-        array[i] = data(pCur); // Menyalin data ke dalam array
-        pCur = next(pCur); // Memindahkan pCur ke node berikutnya
-        i++; // Menambahkan indeks array
+        array[i] = data(pCur);
+        pCur = next(pCur);
+        i++;
     } while (pCur != head);
+    array[i] = '\0';
+}
+
+void ArraytoLinkedList(const char *extractedMessage, address *head) {
+    int i = 0;
+    while (extractedMessage[i] != '\0') {
+        insertNode(head, extractedMessage[i]);
+        i++;
+    }
+}
+
+void deleteRandChar(address *head) {
+    if (*head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    address current = *head;
+    int position = 1; // Start position from 0
+
+    do {
+        address nextNode = next(current);
+
+        // Check if the current position is even
+        if (position % 2 == 0) {
+            // If the node to be deleted is the head, update the head
+            if (current == *head) {
+                *head = next(current);
+                if (*head == current) { // Only one node was in the list
+                    *head = NULL;
+                }
+            }
+
+            // Unlink the node
+            prev(nextNode) = prev(current);
+            next(prev(current)) = nextNode;
+            free(current);
+
+            if (*head == NULL) {
+                break; // List became empty
+            }
+        }
+
+        current = nextNode;
+        position++;
+
+    } while (current != *head);
+
+    // Ensure the list is properly circular
+    if (*head != NULL) {
+        address last = *head;
+        while (next(last) != *head) {
+            last = next(last);
+        }
+        prev(*head) = last;
+        next(last) = *head;
+    }
+}
+
+void unshiftnode(address *head) {
+    if (*head == NULL || next(*head) == *head) {
+        // Jika linked list kosong atau hanya ada satu node
+        return;
+    }
+
+    address pLast = prev(*head); // Simpan node terakhir
+    address pFirstAfterHead = next(*head); // Simpan node pertama setelah head
+    infotype temp;
+
+    while (next(pLast) != pFirstAfterHead) { // Iterasi sampai sebelum node pertama setelah head
+        temp = data(pLast);
+        data(pLast) = data(prev(pLast));
+        data(prev(pLast)) = temp;
+        pLast = prev(pLast);
+    }
+
+    // Set next dari node terakhir menjadi node pertama setelah head
+    next(pLast) = pFirstAfterHead;
+    // Set prev dari node pertama setelah head menjadi node terakhir
+    prev(pFirstAfterHead) = pLast;
+    // Set head baru menjadi node terakhir
+    *head = pLast;
+}
+
+/*void deletefirst5node(address *head) {
+    if (*head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    address current = *head;
+    int count = 0;
+
+    // Iterasi melalui 5 node pertama
+    while (current != NULL && count <= 5) {
+        address nextNode = next(current);
+        free(current);
+        current = nextNode;
+        count++;
+    }
+
+    // Atur head baru setelah penghapusan
+    *head = current;
+
+}*/
+
+/*void deletelast5node(address *head) {
+    if (*head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    // Traverse to the last node
+    address current = *head;
+    while (next(current) != *head) {
+        current = next(current);
+    }
+
+    // Traverse back and delete the last 5 nodes
+    int count = 0;
+    while (count < 5 && current != *head) {
+        address prevNode = prev(current); // Get the previous node
+        free(current); // Delete the current node
+        current = prevNode; // Move to the previous node
+        count++;
+    }
+
+    // Update the next pointer of the last remaining node
+    next(current) = *head;
+}*/
+
+
+void printLinkedList(address *head) {
+    if (head == NULL) {
+        printf("Linked list kosong.\n");
+        return;
+    }
+
+    address current = *head;
+    printf(">> Pesan yang disisipkan: ");
+    do {
+        printf("%c", data(current));
+        current = next(current);
+    } while (current != *head);
+    printf("\n");
 }
 
 
@@ -165,8 +286,8 @@ void linkedListToArray(address head, unsigned char* array) {
 //     unsigned char input[size];
 //     linkedListToArray(head, input);
 //     printf("\nhasil akhir bgt ceritanya:\n");
-//     for (int i = 0; i < size; i++) {
-//         printf("%c", input[i]); // Mencetak isi array
+//     for (int i = 0; i <= size; i++) {
+//         printf("%c ", input[i]); // Mencetak isi array
 //     }
 
 // }

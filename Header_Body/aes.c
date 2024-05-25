@@ -527,7 +527,7 @@ char aes_decrypt(unsigned char *input, unsigned char *output, unsigned char *key
     }
 
     expandKey(expandedKey, key, size, expandedKeySize); // Memperluas kunci
- 
+
     aes_invMain(block, expandedKey, nbrRounds); // Melakukan dekripsi blok menggunakan kunci yang diperluas
 
     // Memasukkan blok yang telah didekripsi ke dalam output
@@ -563,7 +563,6 @@ void printASCII(unsigned char *text, int length) {
     printf("\n");
 }
 
-
 Node* createDCLLNode(unsigned char data) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = data;
@@ -582,6 +581,7 @@ Node* append(Node* head, unsigned char data) {
     head->prev = newNode;
     return head;
 }
+
 Node* arrayToDCLL(unsigned char* array, int size) {
     Node* head = NULL;
     for (int i = 0; i < size; i++) {
@@ -589,9 +589,44 @@ Node* arrayToDCLL(unsigned char* array, int size) {
     }
     return head;
 }
-Node* rotateDCLL(Node* head, int k, int direction) {
-    if (!head) return NULL;
+
+Node* insertRandomNode(Node* head, unsigned char data) {
+    if (head == NULL) return NULL;
+    
+    Node* newNode = createDCLLNode(data);
     Node* current = head;
+
+    // Traverse to the second node (third position)
+    for (int i = 0; i < 2; i++) {
+        current = current->next;
+        // If list has less than 3 nodes, insert at the end
+        if (current == head) break;
+    }
+
+    newNode->next = current->next;
+    newNode->prev = current;
+    current->next->prev = newNode;
+    current->next = newNode;
+
+    return newNode; // Return the newly added node
+}
+
+Node* rotateDCLL(Node* head, int k, int direction,  Node** insertedNode) {
+    if (!head) return NULL;
+    if (k <= 0) return head;
+
+    Node* current = head;
+
+    // Calculate the effective rotations needed, in case k is larger than the length of the list
+    int length = 1;
+    Node* temp = head;
+    while (temp->next != head) {
+        length++;
+        temp = temp->next;
+    }
+    k = k % length;
+
+    // Rotate the list by adjusting the head pointer
     if (direction == 1) { // Rotasi ke kanan
         for (int i = 0; i < k; i++) {
             current = current->prev;
@@ -601,6 +636,80 @@ Node* rotateDCLL(Node* head, int k, int direction) {
             current = current->next;
         }
     }
+
+    // Update the head to the new position
+    head = current;
+
+    // Adjust prev and next pointers for all nodes in the list
+    Node* new_tail = head->prev;
+    Node* new_head = head;
+
+    // Rebuild the list connections
+    temp = new_head;
+    do {
+        temp->prev = new_tail;
+        new_tail->next = temp;
+        new_tail = temp;
+        temp = temp->next;
+    } while (temp != new_head);
+
+    *insertedNode = insertRandomNode(current, (unsigned char)(rand() % 256));
+    return current;
+}
+
+
+Node* removeNode(Node* head) {
+    if (head == NULL) return NULL;
+
+    Node* current = head;
+
+    // Traverse to the fourth position
+    for (int i = 0; i < 3; i++) { // Adjusted loop to stop at the fourth node
+        current = current->next;
+        if (current == head) {
+            return head; // If there are less than four nodes, return head unchanged
+        }
+    }
+
+    // Update links to remove the node
+    current->prev->next = current->next;
+    current->next->prev = current->prev;
+
+    // Update head if needed
+    if (current == head) {
+        head = current->prev->prev->prev;
+    }
+
+    free(current);
+    return head;
+}
+
+Node* reverseRotateDCLL(Node* head, int k, int direction, Node* insertedNode) {
+    if (!head || k <= 0) return head;
+
+    // Calculate the effective rotations needed, in case k is larger than the length of the list
+    int length = 0;
+    Node* temp = head;
+    while (temp->next != head) {
+        length++;
+        temp = temp->next;
+    }
+    k = k % length;
+
+    // Reverse the direction: if it was right (1), make it left (0), and vice versa
+    int reverseDirection = (direction == 1) ? 0 : 1;
+    Node* current = head;
+
+    if (reverseDirection == 1) { // Rotate right
+        for (int i = 0; i < k; i++) {
+            current = current->prev;
+        }
+    } else if (reverseDirection == 0) { // Rotate left
+        for (int i = 0; i < k; i++) {
+            current = current->next;
+        }
+    }
+
     return current;
 }
 
@@ -611,12 +720,6 @@ void DCLLToArray(Node* head, unsigned char* array, int size) {
         array[i] = temp->data;
         temp = temp->next;
     }
-}
-
-Node* reverseRotateDCLL(Node* head, int k, int direction) {
-    // Reverse the direction: if it was right (1), make it left (0), and vice versa
-    int reverseDirection = direction == 1 ? 0 : 1;
-    return rotateDCLL(head, k, reverseDirection);
 }
 
 void printDCLL(Node* head) {

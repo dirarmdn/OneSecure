@@ -14,12 +14,12 @@ unsigned char* readIMG(const char* filename, int* width, int* height, int* chann
     return stbi_load(filename, width, height, channels, STBI_rgb);
 }
 
-void savePNG(const char* filename, unsigned char* data, int width, int height) {
-    stbi_write_png(filename, width, height, 3, data, width * 3);        
+void saveBMP(const char* filename, unsigned char* data, int width, int height) {
+    stbi_write_bmp(filename, width, height, 3, data);
 }
 
-void saveJPG(const char* filename, unsigned char* data, int width, int height) {
-    stbi_write_jpg(filename, width, height, 3, data, width * 3);
+void savePNG(const char* filename, unsigned char* data, int width, int height) {
+    stbi_write_png(filename, width, height, 3, data, width * 3);        
 }
 
 void embed_process(const char* coverImage, const char* secretMessage, const char* stegoImage, int option) {
@@ -33,13 +33,9 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
     shiftNode(&head);
 	insertRandChar(&head);
     size = countList(head);
-    shuffleNode(&head);
+    rotateList(&head);
     unsigned char input[size];
     linkedListToArray(head, input);
-    printf("\nhasil akhir bgt ceritanya:\n");
-    for (int i = 0; i < size; i++) {
-        printf("%c\n", input[i]); // Mencetak isi array
-    }
 
     embedMessage(coverImage, input, stegoImage, option);
 }
@@ -97,16 +93,17 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
         }
     }
 
-    // Simpan gambar stego
-    if (option == 2) {
-        savePNG(stegoImage, image, width, height);    
+    if (option == 1) {
+        saveBMP(stegoImage, image, width, height);
+        printf(">> Your Message Hide Successfully!!!\n");
     } else {
-        saveJPG(stegoImage, image, width, height);
+        savePNG(stegoImage, image, width, height);
+        printf(">> Your Message Hide Successfully!!!\n");
     }
+
         
     // Bebaskan memori gambar
     free(image);
-    option = 1;
 }
 
 // Tujuan : Mengekstrak pesan rahasia yang sudah disisipkan pada gambar stego
@@ -164,9 +161,21 @@ void extractMessage(const char* stegoImage) {
     extractedMessage[index] = '\0';
 
     // Print pesan yang diekstrak
-    printf("Pesan yang diekstrak: %s\n", extractedMessage);
+    //printf("Pesan yang diekstrak: %s\n", extractedMessage);
+    extractProcess(extractedMessage);
 
     // Bebaskan memori
     free(extractedMessage);
     free(image);
+}
+
+void extractProcess(const char* extractedMessage) {
+    address head = NULL;
+    ArraytoLinkedList(extractedMessage, &head);
+    rotateList(&head);
+    deleteRandChar(&head);
+    unshiftnode(&head);
+    //deletefirst5node(&head);
+    //deletelast5node(&head);
+    printLinkedList(&head);
 }
