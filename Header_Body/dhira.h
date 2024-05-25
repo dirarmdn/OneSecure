@@ -20,21 +20,21 @@ typedef struct TLinked {
 
 // Tujuan : memesan memory dengan alokasi dinamis
 // Jika berhasil mengirimkan address, dan jika gagal mengirimkan NULL
-address createNode ();
+address createNode();
 
 // Tujuan : Mengisi node yang sudah dipesan dengan Nilai yang dikirimkan
 // Periksa keberadaan P, Nilai diisi jika p tidak NULL
 // next(*p) diisi NULL
 // Param(s) : p (parameter Input-Output); data (parameter Input)
-void fillNode (address p, infotype data);
+void fillNode(address p, infotype data);
 
 // Tujuan : Mengisi linked list dengan random character
 // Param : p (parameter Input-Output)
 void insertRandChar (address *p);
 
-void shiftNode (address *head);
+void shiftNode(address *head);
 
-void shuffleNode (address *head);
+void rotateList(address *head);
 
 // Tujuan : Menghubungkan node menjadi sebuah linked list
 // Param(s) : head (parameter Input-Output), data (parameter input)
@@ -71,6 +71,6 @@ void embedMessage(const char* coverImage, const char* secretMessage, const char*
 
 // Tujuan : untuk menyatukan proses penyisipan pesan mulai dari pemrosesan
 // pesan rahasia sampai embedding to image
-void embed_process (const char* coverImage, const char* secretMessage, const char* stegoImage, int format);
+void embed_process(const char* coverImage, const char* secretMessage, const char* stegoImage, int format);
 
 #endif

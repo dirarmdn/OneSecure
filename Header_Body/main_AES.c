@@ -153,6 +153,14 @@ int main() {
                     printf("2. Encrypt PNG file\n");
                     printf("Enter choice: ");
                     scanf("%d", &choice);
+                    system("cls");
+                    if (choice == 1)
+                    {
+                        printf("=========================     Encrypt BMP File     =========================\n");
+                    } else {
+                        printf("=========================     Encrypt PNG File     =========================\n");
+                    }
+                    
                     printf("Enter your secret message: ");
                     scanf(" %[^\n]", secret_message);
                     printf("Enter your image name: ");

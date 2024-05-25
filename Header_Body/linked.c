@@ -54,20 +54,11 @@ void shiftNode (address *head) {
         temp = data(pCur);
         data(pCur) = data(next(pCur));
         data(next(pCur)) = temp;
-        // printf("\n%c", data(pCur));
-        // printf("%c\n", data(next(pCur)));
         pCur = next(pCur);
     };
-
-    // pCur = *head;
-    // printf("\nshift node:\n");
-    // do {
-    //     printf("%c", data(pCur));
-    //     pCur = next(pCur);
-    // } while (pCur != *head);
 }
 
-void shuffleNode(address *head) {
+void rotateList(address *head) {
     address pCur, temp;
 
     pCur = *head; 
@@ -81,13 +72,6 @@ void shuffleNode(address *head) {
     next(pCur) = prev(pCur); // Ubah pointer next dari node terakhir menjadi prev
     prev(pCur) = temp; // Ubah pointer prev dari node terakhir menjadi next yang disimpan sebelumnya
     *head = pCur; // Atur head baru
-
-    // printf("\nshuffle node:\n");
-    // pCur = *head;
-    // do {
-    //     printf("%c", data(pCur));
-    //     pCur = next(pCur);
-    // } while (pCur != *head);
 }
 
 void insertRandChar(address *head) {
@@ -113,17 +97,9 @@ void insertRandChar(address *head) {
         // Memindahkan pointer ke node baru
         pCur = next(pCur);
         if (pCur != *head) {
-            pCur = next(pCur); // Pindahkan lagi jika tidak mencapai kepala
+            pCur = next(pCur); // Pindahkan lagi jika tidak mencapai head
         }
     } while (pCur != *head);
-
-    // Mencetak isi linked list yang baru disisipi karakter acak
-    // pCur = *head;
-    // printf("\ninsert rand:\n");
-    // do {
-    //     printf("%c", data(pCur));
-    //     pCur = next(pCur);
-    // } while (pCur != *head);
 }
 
 int countList(address head) {
@@ -287,7 +263,7 @@ void printLinkedList(address *head) {
     address current = *head;
     printf("Pesan yang disisipkan: ");
     do {
-        printf("%c ", data(current));
+        printf("%c", data(current));
         current = next(current);
     } while (current != *head);
     printf("\n");

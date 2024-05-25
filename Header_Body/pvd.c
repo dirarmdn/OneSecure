@@ -33,7 +33,7 @@ void embed_process(const char* coverImage, const char* secretMessage, const char
     shiftNode(&head);
 	insertRandChar(&head);
     size = countList(head);
-    shuffleNode(&head);
+    rotateList(&head);
     unsigned char input[size];
     linkedListToArray(head, input);
 
@@ -170,7 +170,7 @@ void extractMessage(const char* stegoImage) {
 void extractProcess(const char* extractedMessage) {
     address head = NULL;
     ArraytoLinkedList(extractedMessage, &head);
-    shuffleNode(&head);
+    rotateList(&head);
     deleteRandChar(&head);
     unshiftnode(&head);
     //deletefirst5node(&head);
