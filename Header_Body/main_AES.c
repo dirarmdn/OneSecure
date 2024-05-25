@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdbool.h>
 #include <math.h>
+#include <stdbool.h>
+#include <time.h>
 #include "raihan.h"
 #include "dwika.h"
 #include "alya.h"
@@ -15,21 +16,24 @@
 int main() {
     int option = 1;
     int i, choice;
-    int rotationSteps = 8; // Misalnya jumlah langkah rotasi yang digunakan
-    int rotationDirection = 1; // 1 untuk rotasi ke kanan, 0 untuk rotasi ke kiri
+    int rotationSteps = 8;
+    int rotationDirection = 1;
     bool cek;
     char inputText[MAX_TEXT_LENGTH];
     char *cekext;
     unsigned char plaintext[MAX_TEXT_LENGTH];
     unsigned char ciphertext[MAX_TEXT_LENGTH];
+    unsigned char decCiphertext[17];
     unsigned char decryptedtext[MAX_TEXT_LENGTH];
     unsigned char key[16];
     enum keySize size = SIZE_16;
     char cover_image[100], stego_image[100], secret_message[100];
     const char* secretMessage;
     const char* coverImage;
-    char menu;
     Node* head = NULL;
+    Node* insertedNode = NULL;
+
+    srand(time(NULL)); // Initialize random number generator
 
     do {
         while (option != 0) {
@@ -48,7 +52,7 @@ int main() {
                     printf("||Please select: ");
                     cek = false;
                     do {
-                        if (scanf("%d", &choice) == true) {
+                        if (scanf("%d", &choice) == 1) {
                             cek = true;
                         } else {
                             printf("||Invalid input. Please enter the correct input!\n");
@@ -74,98 +78,100 @@ int main() {
                     } 
                     break;
 
-                case 2:
-                    do {
-                        system("cls");
-                        printf(">>>>>>>>>>>>>>>>>>\tOneSecure Encrypt AES\t<<<<<<<<<<<<<<<<<<\n");
-                        printf("\n>> Input your message (up to 16 characters): ");
-                        scanf(" %[^\n]s", inputText);
-                        memset(plaintext, 0, MAX_TEXT_LENGTH);
-                        memcpy(plaintext, inputText, strlen(inputText));
+            case 2:
+                // Encrypt
+                do {
+                    system("cls");
+                    printf(">>>>>>>>>>>>>>>>>>\tOneSecure Encrypt AES\t<<<<<<<<<<<<<<<<<<\n");
+                    printf("\n>> Input your message (up to 16 characters): ");
+                    scanf(" %[^\n]s", inputText);
+                    memset(plaintext, 0, MAX_TEXT_LENGTH);
+                    memcpy(plaintext, inputText, strlen(inputText));
 
-                        if (strlen(inputText) > MAX_TEXT_LENGTH) {
-                            printf(">> Error: Plaintext is too long. Please enter up to 16 characters.\n");
-                            sleep(2);
+                    if (strlen(inputText) > MAX_TEXT_LENGTH) {
+                        printf(">> Error: Plaintext is too long. Please enter up to 16 characters.\n");
+                        sleep(2);
+                    }
+                } while (strlen(inputText) > MAX_TEXT_LENGTH);
+
+                printf(">> Enter AES Key (16 characters): ");
+                scanf(" %[^\n]s", key);
+
+                aes_encrypt(plaintext, ciphertext, key, SIZE_16);
+
+                printf(">> Hiding Your Message\n");
+                printf(">> Processing");
+                printf(" .");
+                sleep(1);
+                printf(" .");
+                sleep(1);
+                printf(" .\n");
+                sleep(1);
+                printf(">> Your Message Hide Successfully!!!\n");
+
+                // Convert ciphertext to DCLL
+                head = arrayToDCLL(ciphertext, MAX_TEXT_LENGTH);
+                
+                // Rotate DCLL and insert a random node
+                head = rotateDCLL(head, rotationSteps, rotationDirection, &insertedNode);
+
+                // Print the hidden message (DCLL)
+                printf("\n>> Hidden message: \n>> ");
+                printDCLL(head);
+                printf(">> Copy or Remember this message to use in decrypt!!! \n");
+
+                // Convert DCLL back to array
+                DCLLToArray(head, ciphertext, MAX_TEXT_LENGTH);
+
+                system("pause");
+                option = 1;
+                //option = 6;
+                break;
+
+            case 3:
+                // Decrypt
+                do {
+                    system("cls");
+                    printf(">>>>>>>>>>>>>>>>>>\tOneSecure Decrypt AES\t<<<<<<<<<<<<<<<<<<\n");
+                    printf("\n>> Input Your Hidden message : ");
+                    for (int i = 0; i < 17; i++) {
+                        if (scanf("%2x", &ciphertext[i]) != 1) {
+                            printf("\n>> Error: Invalid input. Please enter a valid Ciphertext.\n");
+                            while (getchar() != '\n');
+                            break;
                         }
-                    } while (strlen(inputText) > MAX_TEXT_LENGTH);
+                    }
+                } while (i < 17);
 
-                    printf(">> Enter AES Key (16 characters): ");
-                    scanf(" %[^\n]s", key);
+                printf(">> Enter AES Key (16 characters): ");
+                scanf(" %[^\n]s", key);
 
-                    aes_encrypt(plaintext, ciphertext, key, size);
+                printf(">> Decrypt Your Message\n");
+                printf(">> Processing");
+                printf(" .");
+                sleep(1);
+                printf(" .");
+                sleep(1);
+                printf(" .\n");
+                sleep(1);
 
-                    printf(">> Hiding Your Message\n");
-                    printf(">> Processing");
-                    printf(" .");
-                    sleep(1);
-                    printf(" .");
-                    sleep(1);
-                    printf(" .\n");
-                    sleep(1);
-                    printf(">> Your Message Hide Successfully!!!\n");
-                    
-                    printf(">> hidden word in HEXADECIMAL:\n>> ");
-                    printHex(ciphertext, MAX_TEXT_LENGTH);
+                head = arrayToDCLL(ciphertext, 17);
+                head = removeNode(head);
+                head = reverseRotateDCLL(head, rotationSteps, rotationDirection, insertedNode);
 
-                    head = arrayToDCLL(ciphertext, MAX_TEXT_LENGTH);
-                    head = rotateDCLL(head, rotationSteps, rotationDirection);
+                printf("\n>> Hidden message: \n>> ");
+                printDCLL(head);
+                
+                // Convert DCLL back to array
+                DCLLToArray(head, ciphertext, MAX_TEXT_LENGTH);
 
-                    //printf(">> Rotated Ciphertext (DCLL):\n>> ");
-                    printf("\n>> Hidden message: \n>> ");
-                    printDCLL(head);
-                    printf(">> Copy or Remember this message to use in decrypt!!! \n");
+                aes_decrypt(ciphertext, decryptedtext, key, SIZE_16);
 
-                    DCLLToArray(head, ciphertext, MAX_TEXT_LENGTH);
-
-                    system("pause");
-                    option = 1;
-                    break;
-
-                case 3:
-                    do {
-                        system("cls");
-                        printf(">>>>>>>>>>>>>>>>>>\tOneSecure Decrypt AES\t<<<<<<<<<<<<<<<<<<\n");
-                        printf("\n>> Input Your Hidden message : ");
-                        for (i = 0; i < MAX_TEXT_LENGTH; i++) {
-                            if (scanf("%2x", &ciphertext[i]) != 1) {
-                                printf("\n>> Error: Invalid input. Please enter a valid Ciphertext.\n");
-                                while (getchar() != '\n');
-                                break;
-                            }
-                        }
-                    } while (i < MAX_TEXT_LENGTH);
-
-                    printf(">> Enter AES Key (16 characters): ");
-                    scanf(" %[^\n]s", key);
-
-                    printf(">> Decrypt Your Message\n");
-                    printf(">> Processing");
-                    printf(" .");
-                    sleep(1);
-                    printf(" .");
-                    sleep(1);
-                    printf(" .\n");
-                    sleep(1);
-
-                    head = arrayToDCLL(ciphertext, MAX_TEXT_LENGTH);
-                    //printf("\n>> Ciphertext Before Reverse Rotate (DCLL):\n>> ");
-                    //printDCLL(head);
-
-                    head = reverseRotateDCLL(head, rotationSteps, rotationDirection);
-                    //printf(">> Ciphertext After Reverse Rotate (DCLL):\n>> ");
-                    //printDCLL(head);
-
-                    DCLLToArray(head, ciphertext, MAX_TEXT_LENGTH);
-                    //printf("\n>> Decrypted text (HEXADECIMAL):\n>> ");
-                    //printHex(decryptedtext, MAX_TEXT_LENGTH);
-
-                    aes_decrypt(ciphertext, decryptedtext, key, size);
-
-                    printf("\n>> This is your message:\n>> ");
-                    printASCII(decryptedtext, MAX_TEXT_LENGTH);
-                    system("pause");
-                    option = 1;
-                    break;
+                printf("\n>> This is your message:\n>> ");
+                printASCII(decryptedtext, MAX_TEXT_LENGTH);
+                system("pause");
+                option = 1;
+                break;
 
                 case 4:
                     system("cls");
@@ -259,11 +265,48 @@ int main() {
                     break;
                     break;
 
+                case 6:
+                    system("cls");
+                    printf(">>>>>>>>>>>>>>>>>>\tOneSecure Merge AES and PVD\t<<<<<<<<<<<<<<<<<<\n\n");
+                    printf(">> Select an option:|\n");
+                    printf(">> 1. Merge AES PVD\n");
+                    printf(">> 2. Decrypt with AES\n");
+                    printf(">> 3. Menu\n");
+                    printf(">> Please select: ");
+                    cek = false;
+                    do {
+                        if (scanf("%d", &choice) == 1) {
+                            cek = true;
+                        } else {
+                            printf(">> Invalid input. Please enter the correct input!\n");
+                            printf(">> Please select: ");
+                            fflush(stdin);
+                        }
+                    } while (!cek);
+
+                    if (choice == 1) {
+                        option = 4;
+                        break;
+                    } else if (choice == 2) {
+                        option = 3;
+                        break;
+                    } else if (choice == 3) {
+                        option = 1;
+                        break;
+                    }
+                        break;
                 case 0:
                     printf("\n>> Exit ...\n");
                     exit(0);
                     break;
             }
+            system("cls");
+            printf("||==============================================||\n");
+            printf("||\t\t\t\t\t\t||\n");
+            printf("||\t   Thank you for using OneSecure   \t||\n");
+            printf("||\t\t\t\t\t\t||\n");
+            printf("||==============================================||\n");
+            sleep(3);
         }
     } while (option != 0);
     return 0;

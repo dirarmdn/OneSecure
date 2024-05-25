@@ -27,9 +27,8 @@ void createRoundKey(unsigned char *expandedKey, unsigned char *roundKey);
 Node* createDCLLNode(unsigned char data);
 Node* append(Node* head, unsigned char data);
 Node* arrayToDCLL(unsigned char* array, int size);
-Node* rotateDCLL(Node* head, int k, int direction);
+Node* rotateDCLL(Node* head, int k, int direction,  Node** insertedNode);
 void DCLLToArray(Node* head, unsigned char* array, int size);
-Node* reverseRotateDCLL(Node* head, int k, int direction);
 void printDCLL(Node* head);
 
 #endif // RAIHAN_H

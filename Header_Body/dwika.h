@@ -9,5 +9,7 @@ void invMixColumn(unsigned char *column);
 void aes_invMain(unsigned char *state, unsigned char *expandedKey, int nbrRounds);
 void printHex(unsigned char *text, int length);
 void printASCII(unsigned char *text, int length);
+Node* removeNode(Node* head);
+Node* reverseRotateDCLL(Node* head, int k, int direction, Node* insertedNode);
 
 #endif 
